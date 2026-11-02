@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>AI Edited This</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Abu Sayed";
+        src: url("assets/fonts/AbuSayed.ttf") format("truetype");
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/Montserrat-VF.ttf") format("truetype");
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Montserrat";
+        src: url("assets/fonts/Montserrat-Italic-VF.ttf") format("truetype");
+        font-weight: 100 900;
+        font-style: italic;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Instrument Serif";
+        src: url("assets/fonts/InstrumentSerif-Italic.ttf") format("truetype");
+        font-style: italic;
+        font-display: block;
+      }
+      :root {
+        --paper: #f4f0ea;
+        --paper-2: #ebe5dc;
+        --ink: #16130f;
+        --ink-2: #0f0d0c;
+        --accent: #f26419;
+        --accent-deep: #c2410c;
+        --grad: linear-gradient(115deg, #ffa43a 0%, #f26419 52%, #d9480f 100%);
+        --cap: #fbf8f3;
+        --bn: "Abu Sayed", "Montserrat", sans-serif;
+        --en: "Montserrat", sans-serif;
+        --serif: "Instrument Serif", serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--ink-2);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--ink-2);
+        font-family: var(--en);
+      }
+
+      /* ---------- camera (A-roll + behind-text + subject cutout) ---------- */
+      #cam {
+        position: absolute;
+        inset: 0;
+        transform-origin: 540px 700px;
+      }
+      #aroll,
+      .subj {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        object-fit: cover;
+      }
+      #behind {
+        position: absolute;
+        inset: 0;
+        clip-path: inset(0 0 980px 0);
+      }
+      .tb {
+        position: absolute;
+        left: 0;
+        width: 1080px;
+        text-align: center;
+        color: var(--ink);
+        opacity: 0;
+        line-height: 0.86;
+        white-space: nowrap;
+      }
+      .tb .k {
+        display: block;
+        font-family: var(--bn);
+        font-size: 64px;
+        line-height: 1.1;
+        color: rgba(22, 19, 15, 0.78);
+      }
+      .tb.en9,
+      .tb .en9 {
+        font-family: var(--en);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+      }
+      .tb.en2,
+      .tb .en2 {
+        font-family: var(--en);
+        font-weight: 200;
+        letter-spacing: 0.02em;
+      }
+      .tb .red {
+        color: var(--accent);
+      }
+      #dim {
+        position: absolute;
+        inset: 0;
+        background: var(--ink-2);
+        opacity: 0;
+      }
+
+      /* ---------- small overlays on the A-roll ---------- */
+      #pill {
+        position: absolute;
+        top: 120px;
+        left: 250px;
+        width: 580px;
+        height: 118px;
+        border-radius: 60px;
+        background: #0d0c0b;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 0 34px 0 20px;
+        opacity: 0;
+        color: #fff;
+      }
+      #pill .av {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(160deg, #e9e2d6, #b9ab98);
+        color: var(--ink);
+        font: 800 38px var(--en);
+        display: grid;
+        place-items: center;
+      }
+      #pill .who {
+        flex: 1;
+      }
+      #pill .nm {
+        font: 700 36px var(--en);
+        letter-spacing: -0.01em;
+      }
+      #pill .sub {
+        font: 400 26px var(--bn);
+        color: rgba(255, 255, 255, 0.62);
+        margin-top: 2px;
+      }
+      #pill .wave {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        height: 40px;
+      }
+      #pill .wave i {
+        display: block;
+        width: 6px;
+        height: 34px;
+        border-radius: 3px;
+        background: #3ddc84;
+        transform-origin: 50% 50%;
+      }
+      #chip {
+        position: absolute;
+        left: 0;
+        width: 1080px;
+        top: 1488px;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+      }
+      #chip .in {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        background: rgba(244, 240, 234, 0.94);
+        color: var(--ink);
+        border-radius: 40px;
+        padding: 16px 30px;
+        font: 600 26px var(--en);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.25);
+      }
+      #chip .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--grad);
+      }
+      #chip b {
+        font-weight: 900;
+      }
+
+      /* ---------- full-screen scenes (B-roll + cards) ---------- */
+      .scene {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        visibility: hidden;
+      }
+      .scene.paper {
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .scene.ink {
+        background: var(--ink-2);
+        color: #fff;
+      }
+      .scene .grain {
+        position: absolute;
+        inset: 0;
+        background: url("assets/tex/grain.png");
+        opacity: 0.32;
+      }
+      .scene.ink .grain {
+        opacity: 0.14;
+      }
+      .scene .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(22, 19, 15, 0.07) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(22, 19, 15, 0.07) 2px, transparent 2px);
+        background-size: 120px 120px;
+        background-position: 60px 40px;
+      }
+      .star {
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        right: -150px;
+        top: -150px;
+      }
+      .star.bl {
+        right: auto;
+        top: auto;
+        left: -170px;
+        bottom: -170px;
+      }
+      .glow {
+        position: absolute;
+        width: 900px;
+        height: 900px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 140, 50, 0.55) 0%, rgba(242, 100, 25, 0.2) 38%, rgba(217, 72, 15, 0) 70%);
+      }
+      .kicker {
+        position: absolute;
+        left: 60px;
+        right: 60px;
+        text-align: center;
+        font: 600 26px var(--en);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        opacity: 0.72;
+      }
+      .kicker .bnt {
+        font-family: var(--bn);
+        letter-spacing: 0;
+        font-size: 34px;
+        text-transform: none;
+      }
+      .head {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        text-align: center;
+        line-height: 0.92;
+      }
+      .w2 {
+        font-family: var(--en);
+        font-weight: 200;
+      }
+      .w9 {
+        font-family: var(--en);
+        font-weight: 900;
+        letter-spacing: -0.035em;
+      }
+      .sf {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+      }
+      .bnt {
+        font-family: var(--bn);
+      }
+      .red,
+      .tb .red {
+        background: var(--grad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .win {
+        position: absolute;
+        left: 50%;
+        border-radius: 34px;
+        overflow: hidden;
+        background: #000;
+      }
+      .paper .win {
+        box-shadow:
+          0 40px 80px rgba(22, 19, 15, 0.28),
+          0 8px 20px rgba(22, 19, 15, 0.18);
+      }
+      .ink .win {
+        box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.08),
+          0 40px 90px rgba(0, 0, 0, 0.6);
+      }
+      .win-in {
+        position: absolute;
+        inset: 0;
+      }
+      .win video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .stat {
+        position: absolute;
+        background: var(--grad);
+        color: #fff;
+        border-radius: 26px;
+        padding: 20px 34px 24px;
+        box-shadow: 0 24px 50px rgba(217, 72, 15, 0.35);
+        text-align: left;
+      }
+      .tag {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 22px;
+        border-radius: 30px;
+        font: 700 24px var(--en);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .tag .live {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--grad);
+      }
+
+      /* ---------- C2: the AI race ---------- */
+      .race-row {
+        position: absolute;
+        left: 0;
+        width: 1080px;
+        text-align: center;
+      }
+      .race-name {
+        font: 800 150px var(--en);
+        letter-spacing: -0.045em;
+        line-height: 1;
+      }
+      .race-sub {
+        font: 400 44px var(--bn);
+        opacity: 0.7;
+        margin-top: 12px;
+      }
+      .opus {
+        display: inline-block;
+        margin-top: 22px;
+        background: var(--grad);
+        color: #fff;
+        border-radius: 40px;
+        padding: 14px 36px 18px;
+        font: 800 56px var(--en);
+        letter-spacing: -0.01em;
+      }
+
+      /* ---------- C4: checklist ---------- */
+      .check-row {
+        position: absolute;
+        left: 120px;
+        right: 120px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        gap: 34px;
+        border-bottom: 3px solid rgba(22, 19, 15, 0.12);
+      }
+      .check-box {
+        width: 84px;
+        height: 84px;
+        border-radius: 22px;
+        border: 4px solid var(--ink);
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+      .check-box svg {
+        width: 54px;
+        height: 54px;
+      }
+      .check-txt {
+        flex: 1;
+      }
+      .check-txt .t1 {
+        font: 800 64px var(--en);
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+      .check-txt .t2 {
+        font: 400 36px var(--bn);
+        opacity: 0.62;
+        margin-top: 6px;
+      }
+
+      /* ---------- MG1: time between big shifts ---------- */
+      .tl-node {
+        position: absolute;
+        left: 186px;
+        right: 60px;
+      }
+      .tl-dot {
+        position: absolute;
+        left: 0;
+        top: 14px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--grad);
+        box-shadow: 0 0 0 9px rgba(242, 100, 25, 0.18);
+      }
+      .tl-year {
+        margin-left: 70px;
+        font: 900 84px var(--en);
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+      .tl-what {
+        margin-left: 72px;
+        margin-top: 6px;
+        font: 300 34px var(--en);
+        letter-spacing: 0.02em;
+        opacity: 0.75;
+      }
+      .tl-gap {
+        position: absolute;
+        left: 258px;
+        font: 400 42px var(--bn);
+        opacity: 0.55;
+      }
+      .tl-tick {
+        position: absolute;
+        left: 194px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--grad);
+      }
+
+      /* ---------- MG3: editing timeline ---------- */
+      .nle {
+        position: absolute;
+        left: 60px;
+        top: 270px;
+        width: 960px;
+        height: 800px;
+        border-radius: 28px;
+        background: #1c1916;
+        box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.07),
+          0 40px 90px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+      }
+      .nle-bar {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 26px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+        font: 500 22px var(--en);
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .nle-bar i {
+        display: block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+      }
+      .nle-row {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 104px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+      }
+      .nle-lab {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 150px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 26px;
+        font: 700 21px var(--en);
+        letter-spacing: 0.14em;
+        color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.025);
+      }
+      .nle-clip {
+        position: absolute;
+        top: 20px;
+        height: 64px;
+        border-radius: 10px;
+        transform-origin: 0 50%;
+      }
+      .nle-key {
+        position: absolute;
+        top: 42px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        transform: rotate(45deg);
+      }
+      #nle-play {
+        position: absolute;
+        top: 64px;
+        bottom: 0;
+        left: 150px;
+        width: 4px;
+        background: var(--grad);
+        box-shadow: 0 0 18px rgba(242, 100, 25, 0.8);
+      }
+      #nle-stamp {
+        position: absolute;
+        right: 70px;
+        top: 900px;
+        padding: 8px 30px 12px;
+        border: 6px solid var(--accent);
+        border-radius: 18px;
+        font: 900 92px var(--en);
+        letter-spacing: -0.02em;
+        color: var(--accent);
+      }
+
+      /* ---------- captions ---------- */
+      #caps {
+        position: absolute;
+        left: 0;
+        top: 1150px;
+        width: 1080px;
+        height: 330px;
+        color: var(--cap);
+        pointer-events: none;
+      }
+      .cg {
+        position: absolute;
+        left: 50px;
+        right: 50px;
+        top: 0;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+      }
+      .cg .ln {
+        display: block;
+      }
+      .cg .top,
+      .cg .tail {
+        font-size: 46px;
+        line-height: 1.32;
+      }
+      .cg .top .l {
+        font-weight: 400;
+        font-size: 40px;
+      }
+      .cg .tail .l {
+        font-weight: 300;
+        font-size: 38px;
+      }
+      .cg .big {
+        position: relative;
+        isolation: isolate;
+        display: inline-block;
+        font-size: 112px;
+        line-height: 1.12;
+        margin: 2px 0 4px;
+        padding: 0 14px;
+      }
+      .cg .big .l {
+        font-size: 96px;
+        letter-spacing: -0.035em;
+      }
+      .cg .big.w-black .l {
+        font-weight: 900;
+      }
+      .cg .big.w-bold .l {
+        font-weight: 700;
+      }
+      .cg .big.w-thin .l {
+        font-weight: 200;
+        letter-spacing: -0.01em;
+      }
+      .cg .big.w-serif .l {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 124px;
+        letter-spacing: -0.01em;
+      }
+      .cg .w {
+        display: inline-block;
+        white-space: pre;
+      }
+      .cg .b {
+        font-family: var(--bn);
+      }
+      .cg .l {
+        font-family: var(--en);
+      }
+      .cg .hl {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 18%;
+        bottom: 6%;
+        background: var(--grad);
+        border-radius: 10px;
+        transform-origin: 0 50%;
+      }
+      .cg .big-in {
+        position: relative;
+        z-index: 1;
+      }
+      .cg .tick {
+        position: relative;
+        display: inline-block;
+        height: 1.12em;
+        overflow: hidden;
+        vertical-align: bottom;
+      }
+      .cg .tick .ti {
+        display: block;
+        height: 1.12em;
+      }
+      #caps .cg {
+        text-shadow: var(--capsh);
+      }
+      #caps .cg .big.has-hl .big-in {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-r640"
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="198.7"
+      data-width="1080"
+      data-height="1920"
+      data-fx-chain='{"version":1,"nodes":[{"type":"truepeak","id":"m1","params":{"ceiling":-1,"lookahead":3,"release":80}}]}'
+    >
+      <!-- ============ CAMERA: A-roll, text behind the speaker, speaker cutout ============ -->
+      <div data-hf-id="hf-ftaq" id="cam">
+        <video data-hf-id="hf-00j4"
+          id="aroll"
+          src="assets/aroll/aroll_clean.mp4"
+          data-start="0"
+          data-duration="198.7"
+          data-media-start="0"
+          data-track-index="0"
+          data-label="A-roll"
+          muted
+          playsinline
+        ></video>
+
+        <div data-hf-id="hf-h0l5" id="behind">
+          <div data-hf-id="hf-6xns" class="tb" id="tb0" style="top: 52px">
+            <span data-hf-id="hf-145w" class="k">AI-এর পরে আমাদের</span>
+            <span data-hf-id="hf-gfin" class="bnt" style="font-size: 142px; line-height: 1.12">কাজটা কী থাকবে?</span>
+          </div>
+          <div data-hf-id="hf-guhy" class="tb en9" id="tb1" style="top: 120px; font-size: 560px">AI</div>
+          <div data-hf-id="hf-t3md" class="tb en9" id="tb2" style="top: 220px; font-size: 172px">ROADSTER</div>
+          <div data-hf-id="hf-vo0l" class="tb" id="tb3" style="top: 120px">
+            <span data-hf-id="hf-x2vm" class="en9" style="font-size: 520px">1</span><span data-hf-id="hf-doz8" class="en2" style="font-size: 120px; vertical-align: 300px; margin-left: 12px">MONTH</span>
+          </div>
+          <div data-hf-id="hf-o9pw" class="tb" id="tb4" style="top: 110px; height: 500px">
+            <div data-hf-id="hf-8znh" id="tb4-roll" style="position: relative; height: 480px; overflow: hidden">
+              <div data-hf-id="hf-bu9n" class="tb4-n en9" style="font-size: 480px; position: absolute; left: 70px; width: 420px; top: 0; text-align: center">1</div>
+              <div data-hf-id="hf-bfym" class="tb4-n en9" style="font-size: 480px; position: absolute; left: 70px; width: 420px; top: 0; text-align: center">2</div>
+              <div data-hf-id="hf-m9iz" class="tb4-n en9" style="font-size: 480px; position: absolute; left: 70px; width: 420px; top: 0; text-align: center">1</div>
+              <div data-hf-id="hf-9imq" class="tb4-n en9" style="font-size: 480px; position: absolute; left: 70px; width: 420px; top: 0; text-align: center">2</div>
+              <div data-hf-id="hf-b1nl" class="tb4-n en9" style="font-size: 480px; position: absolute; left: 70px; width: 420px; top: 0; text-align: center">3</div>
+              <div data-hf-id="hf-it3d" class="tb4-n en9 red" style="font-size: 480px; position: absolute; left: 70px; width: 420px; top: 0; text-align: center">4</div>
+            </div>
+          </div>
+          <div data-hf-id="hf-s5qo" class="tb en2" id="tb5" style="top: 240px; font-size: 150px; letter-spacing: 0.04em">EXISTENCE</div>
+          <div data-hf-id="hf-5uj7" class="tb" id="tb6" style="top: 150px">
+            <span data-hf-id="hf-d8of" class="en9 red" style="font-size: 400px">40</span><span data-hf-id="hf-zy6u" class="en2" style="font-size: 130px; vertical-align: 220px; margin-left: 14px">MIN</span>
+          </div>
+          <div data-hf-id="hf-zq4v" class="tb" id="tb7" style="top: 96px">
+            <span data-hf-id="hf-pisl" class="en2" style="font-size: 100px; letter-spacing: 0.02em">EDITED BY </span><span data-hf-id="hf-yt1b" class="en9 red" style="font-size: 150px">AI</span>
+          </div>
+        </div>
+
+        <!-- speaker cutout: only during behind-text windows, frame-locked to the A-roll -->
+        <video data-hf-id="hf-rkcv" class="subj" id="subj-0" src="assets/aroll/subj-0.webm" data-start="0" data-duration="5.6" data-media-start="0" data-track-index="1" data-label="Cutout · hook" muted playsinline></video>
+        <video data-hf-id="hf-qhyp" class="subj" id="subj-1" src="assets/aroll/subj-1.webm" data-start="18.5" data-duration="6.6" data-media-start="0" data-track-index="1" data-label="Cutout · AI" muted playsinline></video>
+        <video data-hf-id="hf-xjva" class="subj" id="subj-2" src="assets/aroll/subj-2.webm" data-start="51.2" data-duration="3.6" data-media-start="0" data-track-index="1" data-label="Cutout · ROADSTER" muted playsinline></video>
+        <video data-hf-id="hf-060g" class="subj" id="subj-3" src="assets/aroll/subj-3.webm" data-start="76.6" data-duration="4.1" data-media-start="0" data-track-index="1" data-label="Cutout · 1 MONTH" muted playsinline></video>
+        <video data-hf-id="hf-ydw8" class="subj" id="subj-4" src="assets/aroll/subj-4.webm" data-start="96.6" data-duration="3.9" data-media-start="0" data-track-index="1" data-label="Cutout · years" muted playsinline></video>
+        <video data-hf-id="hf-m02n" class="subj" id="subj-5" src="assets/aroll/subj-5.webm" data-start="124.4" data-duration="3.4" data-media-start="0" data-track-index="1" data-label="Cutout · EXISTENCE" muted playsinline></video>
+        <video data-hf-id="hf-c44e" class="subj" id="subj-6" src="assets/aroll/subj-6.webm" data-start="155.0" data-duration="2.6" data-media-start="0" data-track-index="1" data-label="Cutout · 40 MIN" muted playsinline></video>
+        <video data-hf-id="hf-xv81" class="subj" id="subj-7" src="assets/aroll/subj-7.webm" data-start="163.9" data-duration="2.9" data-media-start="0" data-track-index="1" data-label="Cutout · EDITED BY AI" muted playsinline></video>
+      </div>
+      <div data-hf-id="hf-6pf9" id="dim"></div>
+
+      <!-- ============ A-roll overlays ============ -->
+      <div data-hf-id="hf-6cks" id="pill">
+        <div data-hf-id="hf-grfv" class="av">T</div>
+        <div data-hf-id="hf-xhzk" class="who">
+          <div data-hf-id="hf-0wxp" class="nm">Tamim</div>
+          <div data-hf-id="hf-98r2" class="sub" id="pill-sub">রাত ৮:৪৭ · <span data-hf-id="hf-0gf9" id="pill-time" style="font-family: var(--en); position: relative; display: inline-block; width: 90px; height: 1.2em; vertical-align: bottom"><span data-hf-id="hf-1uzn" class="s" style="position: absolute; left: 0">00:47</span><span data-hf-id="hf-wp0a" class="s" style="position: absolute; left: 0">00:48</span><span data-hf-id="hf-wap9" class="s" style="position: absolute; left: 0">00:49</span><span data-hf-id="hf-0n4b" class="s" style="position: absolute; left: 0">00:50</span></span></div>
+        </div>
+        <div data-hf-id="hf-cfyz" class="wave"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i><i data-hf-id="hf-ylp6"></i><i data-hf-id="hf-0l8b"></i></div>
+      </div>
+      <div data-hf-id="hf-ov2n" id="chip">
+        <div data-hf-id="hf-4cik" class="in"><span data-hf-id="hf-9gry" class="dot"></span><b data-hf-id="hf-3x4e">Tesla Roadster</b> · unveiled 15 Oct 2026 · SpaceX, Texas</div>
+      </div>
+
+      <!-- ============ B1 · village land (paper) ============ -->
+      <section data-hf-id="hf-6qyw" class="scene paper" id="sc-fields">
+        <div data-hf-id="hf-h60x" class="grain"></div>
+        <div data-hf-id="hf-kxq8" class="grid"></div>
+        <svg data-hf-id="hf-y6dc" class="star" viewBox="0 0 100 100"><path data-hf-id="hf-w3iy" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div data-hf-id="hf-8a8y" class="kicker" style="top: 248px"><span data-hf-id="hf-61d3" class="bnt">রাত ৯টা · ফোনকল · তামিম</span></div>
+        <div data-hf-id="hf-a9g0" class="head" style="top: 300px"><span data-hf-id="hf-79y4" class="sf" style="font-size: 190px">Plan B.</span></div>
+        <div data-hf-id="hf-7jbe" class="win" style="width: 960px; height: 600px; margin-left: -480px; top: 520px">
+          <div data-hf-id="hf-yo8r" class="win-in" data-layout-allow-overflow><video data-hf-id="hf-s5xp" id="v-fields" src="assets/broll/fields.mp4" data-start="9.6" data-duration="7.15" data-media-start="0" data-track-index="2" data-label="B-roll · fields" muted playsinline></video></div>
+        </div>
+      </section>
+
+      <!-- ============ B2 · every industry (paper) ============ -->
+      <section class="scene paper" id="sc-ind">
+        <div class="grain"></div>
+        <div class="grid"></div>
+        <svg class="star bl" viewBox="0 0 100 100"><path d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div class="kicker" style="top: 300px">AI is taking over</div>
+        <div class="head" style="top: 352px">
+          <span class="w2" style="font-size: 92px">EVERY</span>
+          <span class="w9 red" style="font-size: 92px">INDUSTRY.</span>
+        </div>
+        <div class="win" style="width: 960px; height: 600px; margin-left: -480px; top: 520px">
+          <div class="win-in" data-layout-allow-overflow><video id="v-ind" src="assets/broll/industries.mp4" data-start="20.9" data-duration="5.35" data-media-start="0" data-track-index="2" data-label="B-roll · industries montage" muted playsinline></video></div>
+          <div class="tag ind-tag" style="left: 26px; bottom: 26px; background: rgba(15, 13, 12, 0.72); color: #fff"><span class="live"></span>Manufacturing</div>
+          <div class="tag ind-tag" style="left: 26px; bottom: 26px; background: rgba(15, 13, 12, 0.72); color: #fff"><span class="live"></span>Robotics</div>
+          <div class="tag ind-tag" style="left: 26px; bottom: 26px; background: rgba(15, 13, 12, 0.72); color: #fff"><span class="live"></span>Agriculture</div>
+        </div>
+      </section>
+
+      <!-- ============ C1 · fool's paradise (paper card) ============ -->
+      <section data-hf-id="hf-lvfj" class="scene paper" id="sc-fool">
+        <div data-hf-id="hf-3l5h" class="grain"></div>
+        <div data-hf-id="hf-6qwo" class="grid"></div>
+        <svg data-hf-id="hf-l9d0" class="star bl" viewBox="0 0 100 100"><path data-hf-id="hf-nl6m" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div data-hf-id="hf-jvwy" class="head" style="top: 690px">
+          <div data-hf-id="hf-1dcc" id="fool-1" class="bnt" style="font-size: 62px; line-height: 1.3; opacity: 0.8">সত্যি কথা বলতে, আপনারা</div>
+          <div data-hf-id="hf-k964" style="position: relative; display: inline-block; margin: 26px 0 18px; padding: 6px 34px 16px">
+            <div data-hf-id="hf-8qcd" id="fool-bar" style="position: absolute; inset: 0; background: var(--grad); border-radius: 18px; transform-origin: 0 50%"></div>
+            <div data-hf-id="hf-j6hf" id="fool-2" class="bnt" style="position: relative; font-size: 170px; line-height: 1.15; color: #fff">বোকার স্বর্গে</div>
+          </div>
+          <div data-hf-id="hf-28wu" id="fool-3" class="bnt" style="font-size: 62px; line-height: 1.3; opacity: 0.8">বসবাস করতেছেন।</div>
+        </div>
+      </section>
+
+      <!-- ============ B2b · night -> next morning (ink) ============ -->
+      <section class="scene ink" id="sc-morning">
+        <div class="grain"></div>
+        <div class="glow" data-layout-allow-overflow id="morning-glow" style="right: -420px; top: -420px"></div>
+        <div class="kicker" style="top: 300px; color: #fff">The next morning</div>
+        <div class="head" style="top: 340px"><span class="sf" style="font-size: 150px">sleep, wake up…</span></div>
+        <div class="win" style="width: 960px; height: 600px; margin-left: -480px; top: 520px">
+          <div class="win-in" data-layout-allow-overflow><video id="v-morning" src="assets/broll/morning.mp4" data-start="44.45" data-duration="3.27" data-media-start="0" data-track-index="2" data-label="B-roll · night to morning" muted playsinline></video></div>
+        </div>
+      </section>
+
+      <!-- ============ B3 · Tesla ramp (ink) ============ -->
+      <section data-hf-id="hf-wxrx" class="scene ink" id="sc-ramp">
+        <div data-hf-id="hf-4s2k" class="grain"></div>
+        <div data-hf-id="hf-vxzk" class="glow" data-layout-allow-overflow id="ramp-glow" style="left: -420px; bottom: -380px"></div>
+        <div data-hf-id="hf-40s0" class="tag" style="left: 60px; top: 236px; background: rgba(255, 255, 255, 0.08); color: #fff"><span data-hf-id="hf-ww3z" class="live"></span>Live · SpaceX test site, Texas</div>
+        <div data-hf-id="hf-q543" class="head" style="top: 300px; text-align: left; left: 60px">
+          <span data-hf-id="hf-br6p" class="w2" style="font-size: 84px; letter-spacing: 0.02em">TESLA</span>
+          <span data-hf-id="hf-0ozy" class="w9" style="font-size: 84px">ROADSTER</span>
+        </div>
+        <div data-hf-id="hf-5wra" class="win" style="width: 960px; height: 720px; margin-left: -480px; top: 420px">
+          <div data-hf-id="hf-kyyj" class="win-in" data-layout-allow-overflow><video data-hf-id="hf-kx42" id="v-ramp" src="assets/broll/tesla-ramp.mp4" data-start="47.05" data-duration="5.4" data-media-start="0" data-track-index="2" data-label="B-roll · Tesla ramp (1News live)" muted playsinline></video></div>
+        </div>
+      </section>
+
+      <!-- ============ B4 · Tesla flight (ink) — user's B-roll ============ -->
+      <section data-hf-id="hf-hg8v" class="scene ink" id="sc-flight">
+        <div data-hf-id="hf-4drj" class="grain"></div>
+        <div data-hf-id="hf-oswe" class="glow" data-layout-allow-overflow id="flight-glow" style="right: -460px; top: -420px"></div>
+        <div data-hf-id="hf-zhug" class="kicker" style="top: 190px; color: #fff">15 Oct 2026 · Cold-gas thrusters</div>
+        <div data-hf-id="hf-p2du" class="win" style="width: 720px; height: 900px; margin-left: -360px; top: 250px">
+          <div data-hf-id="hf-kkni" class="win-in" data-layout-allow-overflow><video data-hf-id="hf-uhms" id="v-flight" src="assets/broll/tesla-flight.mp4" data-start="54.2" data-duration="5.4" data-media-start="0" data-track-index="2" data-label="B-roll · Tesla flight (user short + NBC)" muted playsinline></video></div>
+        </div>
+        <div data-hf-id="hf-c8h7" class="stat" id="flight-stat" style="left: 120px; top: 1010px">
+          <div data-hf-id="hf-5f28" style="font: 600 22px var(--en); letter-spacing: 0.18em; opacity: 0.85">0 – 60 MPH</div>
+          <div data-hf-id="hf-bv9b" style="font: 900 62px var(--en); letter-spacing: -0.03em; line-height: 1">&lt; 1 SEC</div>
+        </div>
+      </section>
+
+      <!-- ============ C2 · the AI race (paper card) ============ -->
+      <section data-hf-id="hf-4hpw" class="scene paper" id="sc-race">
+        <div data-hf-id="hf-5kom" class="grain"></div>
+        <div data-hf-id="hf-5jzl" class="grid"></div>
+        <svg data-hf-id="hf-e4zc" class="star" viewBox="0 0 100 100"><path data-hf-id="hf-nzhn" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div data-hf-id="hf-7t3n" class="kicker" style="top: 300px">The AI race · <span data-hf-id="hf-tspa" class="bnt">দুইটা</span> company</div>
+        <div class="race-row" id="race-title" style="top: 560px">
+          <div class="w2" style="font-size: 120px; line-height: 1">THE AI</div>
+          <div class="w9 red" style="font-size: 190px; line-height: 1">RACE.</div>
+        </div>
+        <div id="race-lanes" style="position: absolute; left: 140px; width: 800px; top: 960px">
+          <div style="position: relative; height: 22px; border-radius: 11px; background: rgba(22, 19, 15, 0.08); overflow: hidden"><div class="lane-fill" style="position: absolute; inset: 0; background: var(--grad); transform-origin: 0 50%"></div></div>
+          <div style="position: relative; height: 22px; margin-top: 26px; border-radius: 11px; background: rgba(22, 19, 15, 0.08); overflow: hidden"><div class="lane-fill" style="position: absolute; inset: 0; background: #16130f; transform-origin: 0 50%"></div></div>
+        </div>
+        <div data-hf-id="hf-li9k" class="race-row" id="race-a" style="top: 400px">
+          <div data-hf-id="hf-wmsk" class="race-name">ChatGPT</div>
+          <div data-hf-id="hf-n16b" class="race-sub" id="race-a-sub">নতুন কী একটা বানাইয়া নিয়ে আসলো</div>
+        </div>
+        <div data-hf-id="hf-1hq1" class="race-row" id="race-vs" style="top: 690px"><span data-hf-id="hf-vrkz" class="sf red" style="font-size: 150px; line-height: 1">vs</span></div>
+        <div data-hf-id="hf-olvv" class="race-row" id="race-b" style="top: 860px">
+          <div data-hf-id="hf-aygz" class="race-name">Claude</div>
+          <div data-hf-id="hf-yeow"><span data-hf-id="hf-8nki" class="opus" id="race-opus">Opus 5.5</span></div>
+        </div>
+      </section>
+
+      <!-- ============ B7 · data centre (ink) ============ -->
+      <section data-hf-id="hf-jgq2" class="scene ink" id="sc-dc">
+        <div data-hf-id="hf-56dl" class="grain"></div>
+        <div data-hf-id="hf-u42o" class="glow" data-layout-allow-overflow id="dc-glow" style="left: -460px; top: -400px"></div>
+        <div data-hf-id="hf-a9uv" class="kicker" style="top: 300px; color: #fff">LLM · large language models</div>
+        <div data-hf-id="hf-vve5" class="head" style="top: 352px">
+          <span data-hf-id="hf-ft3j" class="w2" style="font-size: 92px">ALWAYS</span>
+          <span data-hf-id="hf-hasu" class="w9 red" style="font-size: 92px">STRONGER.</span>
+        </div>
+        <div data-hf-id="hf-5s8l" class="win" style="width: 960px; height: 540px; margin-left: -480px; top: 540px">
+          <div data-hf-id="hf-k6ch" class="win-in" data-layout-allow-overflow><video data-hf-id="hf-qovy" id="v-dc" src="assets/broll/datacenter.mp4" data-start="82.6" data-duration="5.85" data-media-start="0" data-track-index="2" data-label="B-roll · data centre" muted playsinline></video></div>
+        </div>
+      </section>
+
+      <!-- ============ MG1 · time between big shifts (ink) ============ -->
+      <section class="scene ink" id="sc-tl">
+        <div class="grain"></div>
+        <div class="glow" data-layout-allow-overflow id="tl-glow" style="right: -480px; top: -380px"></div>
+        <div class="kicker" style="top: 196px; color: #fff">Time between big shifts</div>
+        <div style="position: absolute; left: 200px; top: 300px; width: 4px; height: 780px; background: rgba(255, 255, 255, 0.16)"></div>
+        <div id="tl-fill" style="position: absolute; left: 200px; top: 300px; width: 4px; height: 780px; background: var(--grad); transform-origin: 50% 0"></div>
+        <div class="tl-node" id="tl-n1" style="top: 280px"><span class="tl-dot"></span><div class="tl-year">1991</div><div class="tl-what">World Wide Web</div></div>
+        <div class="tl-gap" id="tl-g1" style="top: 486px">১৬ বছর</div>
+        <div class="tl-node" id="tl-n2" style="top: 600px"><span class="tl-dot"></span><div class="tl-year">2007</div><div class="tl-what">iPhone</div></div>
+        <div class="tl-gap" id="tl-g2" style="top: 790px">১৫ বছর</div>
+        <div class="tl-node" id="tl-n3" style="top: 880px"><span class="tl-dot"></span><div class="tl-year">2022</div><div class="tl-what">ChatGPT</div></div>
+        <div class="tl-tick" style="top: 1010px"></div>
+        <div class="tl-tick" style="top: 1032px"></div>
+        <div class="tl-tick" style="top: 1054px"></div>
+        <div class="tl-tick" style="top: 1076px"></div>
+        <div id="tl-now" style="position: absolute; left: 258px; top: 1002px">
+          <span class="w9 red" style="font-size: 44px">2023 → 2026</span>
+          <span class="bnt" style="font-size: 38px; opacity: 0.8; margin-left: 14px">এখন মাসে মাসে</span>
+        </div>
+      </section>
+
+      <!-- ============ MG2 · no time to adapt (paper) ============ -->
+      <section class="scene paper" id="sc-time">
+        <div class="grain"></div>
+        <div class="grid"></div>
+        <svg class="star" viewBox="0 0 100 100"><path d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div class="kicker" style="top: 250px">Time to adapt</div>
+        <svg id="ring" viewBox="0 0 600 600" style="position: absolute; left: 240px; top: 320px; width: 600px; height: 600px">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffa43a" /><stop offset="0.52" stop-color="#f26419" /><stop offset="1" stop-color="#d9480f" />
+            </linearGradient>
+          </defs>
+          <g id="ring-ticks"></g>
+          <circle cx="300" cy="300" r="230" fill="none" stroke="rgba(22,19,15,0.08)" stroke-width="34" />
+          <circle id="ring-arc" cx="300" cy="300" r="230" fill="none" stroke="url(#ringGrad)" stroke-width="34" stroke-linecap="round" transform="rotate(-90 300 300)" stroke-dasharray="1445.13" stroke-dashoffset="0" />
+        </svg>
+        <div id="ring-t1" class="bnt" style="position: absolute; left: 0; width: 1080px; top: 520px; text-align: center; font-size: 150px; line-height: 1.2">সময়</div>
+        <div id="ring-t2" class="bnt red" style="position: absolute; left: 0; width: 1080px; top: 520px; text-align: center; font-size: 150px; line-height: 1.2">নাই।</div>
+      </section>
+
+      <!-- ============ B5 · vibe coding (ink) ============ -->
+      <section data-hf-id="hf-wzyq" class="scene ink" id="sc-code">
+        <div data-hf-id="hf-6dao" class="grain"></div>
+        <div data-hf-id="hf-qyfn" class="glow" data-layout-allow-overflow id="code-glow" style="right: -440px; bottom: -420px"></div>
+        <div data-hf-id="hf-kano" class="kicker" style="top: 300px; color: #fff">My advice to friends</div>
+        <div data-hf-id="hf-48nc" class="head" style="top: 344px">
+          <span data-hf-id="hf-xntz" class="sf" style="font-size: 132px">learn</span>
+          <span data-hf-id="hf-9kox" class="w9" style="font-size: 104px">vibe coding.</span>
+        </div>
+        <div data-hf-id="hf-h0fd" class="win" style="width: 960px; height: 540px; margin-left: -480px; top: 540px">
+          <div data-hf-id="hf-js1g" class="win-in" data-layout-allow-overflow><video data-hf-id="hf-8zf0" id="v-code" src="assets/broll/coding.mp4" data-start="112.0" data-duration="7.35" data-media-start="0" data-track-index="2" data-label="B-roll · coding" muted playsinline></video></div>
+        </div>
+      </section>
+
+      <!-- ============ C3 · the reveal (ink card) ============ -->
+      <section data-hf-id="hf-t3j2" class="scene ink" id="sc-reveal">
+        <div data-hf-id="hf-5yzn" class="grain"></div>
+        <div data-hf-id="hf-k98y" class="glow" data-layout-allow-overflow id="rev-glow" style="left: -300px; bottom: -420px; width: 1100px; height: 1100px"></div>
+        <div data-hf-id="hf-b0xg" class="head" style="top: 700px">
+          <div data-hf-id="hf-vubv" class="bnt" style="font-size: 76px; line-height: 1.3; opacity: 0.78">এই ভিডিওটা আমি</div>
+          <div data-hf-id="hf-7kak" style="margin-top: 10px">
+            <span data-hf-id="hf-2i00" class="w9" style="font-size: 170px">edit</span>
+            <span data-hf-id="hf-mha4" class="bnt red" style="font-size: 170px; line-height: 1.15">করি নাই।</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ B6 · manual editing (paper) ============ -->
+      <section data-hf-id="hf-i2hb" class="scene paper" id="sc-edit">
+        <div data-hf-id="hf-0t0a" class="grain"></div>
+        <div data-hf-id="hf-5yam" class="grid"></div>
+        <svg data-hf-id="hf-ppi4" class="star bl" viewBox="0 0 100 100"><path data-hf-id="hf-odso" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div data-hf-id="hf-ntxf" class="kicker" style="top: 176px">If I edited this myself</div>
+        <div data-hf-id="hf-vykv" class="win" style="width: 720px; height: 900px; margin-left: -420px; top: 230px">
+          <div data-hf-id="hf-jdqf" class="win-in" data-layout-allow-overflow><video data-hf-id="hf-2yt4" id="v-edit" src="assets/broll/editing.mp4" data-start="145.75" data-duration="6.6" data-media-start="0" data-track-index="2" data-label="B-roll · editing" muted playsinline></video></div>
+        </div>
+        <div data-hf-id="hf-5ti8" class="stat" id="edit-stat" style="left: 600px; top: 860px">
+          <div data-hf-id="hf-v5u2" style="font: 900 120px var(--en); letter-spacing: -0.04em; line-height: 0.95">4–5</div>
+          <div data-hf-id="hf-cik7" style="font: 300 40px var(--en); letter-spacing: 0.16em">HOURS</div>
+        </div>
+      </section>
+
+      <!-- ============ C4 · what AI already took (paper card) ============ -->
+      <section data-hf-id="hf-l6bd" class="scene paper" id="sc-check">
+        <div data-hf-id="hf-0ep9" class="grain"></div>
+        <div data-hf-id="hf-4rdj" class="grid"></div>
+        <svg data-hf-id="hf-cy29" class="star" viewBox="0 0 100 100"><path data-hf-id="hf-llnh" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div class="head" id="ck-head" style="top: 250px">
+          <div id="ck-h1" class="bnt" style="font-size: 60px; line-height: 1.3; opacity: 0.7">কয়েক দিন আগেও</div>
+          <div id="ck-h2" class="bnt" style="font-size: 120px; line-height: 1.2">ভাবতেছিলাম…</div>
+        </div>
+        <div data-hf-id="hf-k58l" class="check-row" id="ck-1" style="top: 560px">
+          <div data-hf-id="hf-u3b4" class="check-box"><svg data-hf-id="hf-ulu9" viewBox="0 0 24 24"><path data-hf-id="hf-46d9" id="ck-1-p" d="M4 12.5l5 5L20 6.5" fill="none" stroke="#f26419" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div data-hf-id="hf-ejqf" class="check-txt"><div data-hf-id="hf-y7hn" class="t1">Graphic design</div><div data-hf-id="hf-3z1w" class="t2">নিয়ে নিছে</div></div>
+        </div>
+        <div data-hf-id="hf-868t" class="check-row" id="ck-2" style="top: 730px">
+          <div data-hf-id="hf-b2uw" class="check-box"><svg data-hf-id="hf-1tol" viewBox="0 0 24 24"><path data-hf-id="hf-2wbo" id="ck-2-p" d="M4 12.5l5 5L20 6.5" fill="none" stroke="#f26419" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div data-hf-id="hf-jmyv" class="check-txt"><div data-hf-id="hf-l39e" class="t1">Video generation</div><div data-hf-id="hf-ms91" class="t2">হইতেছে</div></div>
+        </div>
+        <div data-hf-id="hf-w1qy" class="check-row" id="ck-3" style="top: 900px; border-bottom: none">
+          <div data-hf-id="hf-n2l0" class="check-box" style="border-color: var(--accent)"><span data-hf-id="hf-z244" id="ck-3-q" style="font: 900 64px var(--en); color: var(--accent); line-height: 1">?</span></div>
+          <div data-hf-id="hf-j8nu" class="check-txt"><div data-hf-id="hf-f7m0" class="t1">Video editing</div><div data-hf-id="hf-4n3v" class="t2">এটা তো <span data-hf-id="hf-qjt6" style="font-family: var(--en); font-weight: 500">thinking task…</span></div></div>
+        </div>
+      </section>
+
+      <!-- ============ MG3 · video editing is a thinking task (ink) ============ -->
+      <section class="scene ink" id="sc-nle">
+        <div class="grain"></div>
+        <div class="glow" data-layout-allow-overflow id="nle-glow" style="left: -460px; bottom: -420px"></div>
+        <div class="kicker" style="top: 196px; color: #fff">Video editing = a thinking task</div>
+        <div class="nle" id="nle">
+          <div class="nle-bar"><i style="background: #ff5f57"></i><i style="background: #febc2e"></i><i style="background: #28c840"></i><span style="margin-left: 14px">this_video_final_v7.prproj</span></div>
+          <div class="nle-row" style="top: 84px"><div class="nle-lab">ANIM</div><div class="nle-clip c-anim" style="left: 170px; width: 120px; background: var(--grad)"></div><div class="nle-clip c-anim" style="left: 420px; width: 90px; background: var(--grad)"></div><div class="nle-clip c-anim" style="left: 640px; width: 150px; background: var(--grad)"></div><div class="nle-key k-anim" style="left: 190px"></div><div class="nle-key k-anim" style="left: 270px"></div><div class="nle-key k-anim" style="left: 440px"></div><div class="nle-key k-anim" style="left: 660px"></div><div class="nle-key k-anim" style="left: 760px"></div></div>
+          <div class="nle-row" style="top: 202px"><div class="nle-lab">V1</div><div class="nle-clip c-v1" style="left: 150px; width: 260px; background: #3c5a78"></div><div class="nle-clip c-v1" style="left: 414px; width: 200px; background: #3c5a78"></div><div class="nle-clip c-v1" style="left: 618px; width: 342px; background: #3c5a78"></div></div>
+          <div class="nle-row" style="top: 320px"><div class="nle-lab">CAPS</div><div class="nle-clip c-caps" style="left: 160px; width: 70px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 238px; width: 90px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 336px; width: 60px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 404px; width: 110px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 522px; width: 80px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 610px; width: 70px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 688px; width: 120px; background: #efe7da"></div><div class="nle-clip c-caps" style="left: 816px; width: 90px; background: #efe7da"></div></div>
+          <div class="nle-row" style="top: 438px"><div class="nle-lab">VOICE</div><div class="nle-clip c-voice" style="left: 150px; width: 810px; background: rgba(120, 200, 140, 0.55)"></div></div>
+          <div class="nle-row" style="top: 556px"><div class="nle-lab">SFX</div><div class="nle-clip c-sfx" style="left: 210px; width: 30px; background: #f26419"></div><div class="nle-clip c-sfx" style="left: 380px; width: 40px; background: #f26419"></div><div class="nle-clip c-sfx" style="left: 520px; width: 30px; background: #f26419"></div><div class="nle-clip c-sfx" style="left: 700px; width: 36px; background: #f26419"></div><div class="nle-clip c-sfx" style="left: 860px; width: 30px; background: #f26419"></div></div>
+          <div class="nle-row" style="top: 674px"><div class="nle-lab">MUSIC</div><div class="nle-clip c-music" style="left: 150px; width: 810px; background: rgba(160, 130, 220, 0.55)"></div></div>
+          <div id="nle-play"></div>
+        </div>
+        <div id="nle-stamp">COMPLEX</div>
+      </section>
+
+      <!-- ============ End card (paper) ============ -->
+      <section data-hf-id="hf-z9wq" class="scene paper" id="sc-end">
+        <div data-hf-id="hf-zzpb" class="grain"></div>
+        <div data-hf-id="hf-55ok" class="grid"></div>
+        <svg data-hf-id="hf-dcda" class="star" viewBox="0 0 100 100"><path data-hf-id="hf-lzyi" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <svg data-hf-id="hf-oil1" class="star bl" viewBox="0 0 100 100"><path data-hf-id="hf-me9j" d="M50 0 C54 34 66 46 100 50 C66 54 54 66 50 100 C46 66 34 54 0 50 C34 46 46 34 50 0Z" fill="#16130f" /></svg>
+        <div data-hf-id="hf-3pfw" class="head" style="top: 700px">
+          <div data-hf-id="hf-3zyr" id="end-1" class="bnt" style="font-size: 92px; line-height: 1.25">ভালো থাকবেন।</div>
+          <div data-hf-id="hf-h1fq" id="end-2" style="margin-top: 70px; font: 300 34px var(--en); letter-spacing: 0.32em; opacity: 0.7">EDITED BY</div>
+          <div data-hf-id="hf-mxd2" id="end-3" style="margin-top: 8px"><span data-hf-id="hf-wenk" class="w9" style="font-size: 132px">Claude</span></div>
+          <div data-hf-id="hf-2454" id="end-4" style="margin-top: 18px"><span data-hf-id="hf-4g56" class="opus" style="font-size: 40px; padding: 10px 28px 14px">Opus 5.5</span></div>
+        </div>
+      </section>
+
+      <!-- ============ captions ============ -->
+      <div data-hf-id="hf-e9za" id="caps"></div>
+
+      <!-- ============ sound ============ -->
+      <audio data-hf-id="hf-q3gh" id="voice" src="assets/audio/voice.wav" data-start="0" data-duration="198.7" data-track-index="3" data-volume="1" data-label="Voice"></audio>
+      <audio data-hf-id="hf-xp9m"
+        id="music"
+        src="assets/audio/music-echoes.wav"
+        data-start="0"
+        data-duration="198.7"
+        data-track-index="4"
+        data-volume="1"
+        data-label="Music · Echoes (Mixkit)"
+        data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":1.5,"v":0.24},{"t":133.3,"v":0.24},{"t":138.6,"v":0.1},{"t":141.55,"v":0.05},{"t":141.7,"v":0},{"t":158.85,"v":0},{"t":159.3,"v":0.32},{"t":161.2,"v":0.25},{"t":166.2,"v":0.25},{"t":167.6,"v":0.15},{"t":169.5,"v":0.15},{"t":170.8,"v":0.24},{"t":194.0,"v":0.24},{"t":198.6,"v":0}]},{"target":"fx.n1.gain","points":[{"t":0,"v":0},{"t":0.539,"v":0},{"t":1.036,"v":-2.8},{"t":1.533,"v":-1.1},{"t":2.03,"v":-3.9},{"t":2.527,"v":-2.3},{"t":3.024,"v":-3.4},{"t":3.52,"v":-2.5},{"t":4.017,"v":-1.9},{"t":4.514,"v":-0.3},{"t":5.011,"v":-2.8},{"t":5.508,"v":-3.7},{"t":6.004,"v":-0.5},{"t":6.501,"v":0},{"t":6.998,"v":-1},{"t":7.495,"v":-3.5},{"t":7.992,"v":-3.1},{"t":8.488,"v":-2.9},{"t":8.985,"v":-3.8},{"t":9.482,"v":-2.7},{"t":9.979,"v":-3.1},{"t":10.476,"v":-4},{"t":10.973,"v":-4},{"t":11.469,"v":-0.6},{"t":11.966,"v":-3.9},{"t":12.463,"v":-4.1},{"t":12.96,"v":-0.6},{"t":13.457,"v":0},{"t":14.947,"v":0},{"t":15.444,"v":-4.2},{"t":15.941,"v":-3.8},{"t":16.437,"v":-2.5},{"t":16.934,"v":-1.1},{"t":17.431,"v":0},{"t":19.418,"v":0},{"t":19.915,"v":-2.9},{"t":20.412,"v":-0.4},{"t":20.909,"v":0},{"t":21.406,"v":-3.3},{"t":21.902,"v":-2.5},{"t":22.399,"v":-3},{"t":22.896,"v":-2.9},{"t":23.393,"v":-0.4},{"t":23.89,"v":-3.6},{"t":24.386,"v":-0.5},{"t":24.883,"v":0},{"t":25.38,"v":0},{"t":25.877,"v":-1.8},{"t":26.374,"v":-0.9},{"t":26.871,"v":-3.2},{"t":27.367,"v":-0.4},{"t":27.864,"v":-4},{"t":28.361,"v":-0.6},{"t":28.858,"v":0},{"t":29.355,"v":-4.1},{"t":29.851,"v":-2.2},{"t":30.348,"v":-0.3},{"t":30.845,"v":0},{"t":31.342,"v":-2.4},{"t":31.839,"v":-0.3},{"t":32.335,"v":-1.6},{"t":32.832,"v":-3.5},{"t":34.323,"v":-3.6},{"t":34.82,"v":-0.5},{"t":35.316,"v":0},{"t":35.813,"v":-1.6},{"t":36.31,"v":-4.2},{"t":36.807,"v":-2.7},{"t":37.304,"v":-2.5},{"t":37.8,"v":-1.4},{"t":38.297,"v":-3.5},{"t":38.794,"v":-0.5},{"t":39.291,"v":-3.7},{"t":39.788,"v":-0.5},{"t":40.284,"v":-2},{"t":40.781,"v":-3.2},{"t":41.278,"v":-2.6},{"t":41.775,"v":-1.9},{"t":42.272,"v":-1.2},{"t":42.769,"v":-4.2},{"t":43.265,"v":-2.8},{"t":43.762,"v":-0.4},{"t":44.259,"v":-2.6},{"t":44.756,"v":-0.4},{"t":45.253,"v":-2.8},{"t":45.749,"v":-3.7},{"t":46.246,"v":-0.5},{"t":46.743,"v":0},{"t":47.24,"v":0},{"t":47.737,"v":-0.6},{"t":48.233,"v":0},{"t":51.214,"v":0},{"t":51.711,"v":-1.3},{"t":52.208,"v":-3.9},{"t":52.705,"v":-3.9},{"t":53.202,"v":-0.5},{"t":53.698,"v":0},{"t":56.679,"v":0},{"t":57.176,"v":-0.6},{"t":57.673,"v":0},{"t":58.667,"v":0},{"t":59.163,"v":-1.9},{"t":59.66,"v":-0.3},{"t":61.151,"v":0},{"t":61.647,"v":-2.2},{"t":62.144,"v":-1},{"t":62.641,"v":-2.2},{"t":63.138,"v":-0.7},{"t":63.635,"v":0},{"t":64.131,"v":0},{"t":64.628,"v":-1},{"t":65.125,"v":-0.3},{"t":65.622,"v":-1.1},{"t":66.119,"v":-1.4},{"t":66.616,"v":0},{"t":67.112,"v":-3.6},{"t":67.609,"v":-0.5},{"t":68.106,"v":-2.3},{"t":68.603,"v":-3.6},{"t":69.1,"v":-0.5},{"t":69.596,"v":0},{"t":73.571,"v":0},{"t":74.068,"v":-3},{"t":74.565,"v":-0.4},{"t":78.042,"v":0},{"t":78.539,"v":-3.7},{"t":79.036,"v":-1.7},{"t":79.533,"v":-3.8},{"t":80.029,"v":-0.5},{"t":80.526,"v":0},{"t":81.023,"v":-1.1},{"t":81.52,"v":-2.2},{"t":82.017,"v":-1.1},{"t":82.514,"v":0},{"t":83.507,"v":0},{"t":84.004,"v":-3.8},{"t":84.501,"v":-0.5},{"t":84.998,"v":-2.7},{"t":85.494,"v":-0.4},{"t":86.488,"v":0},{"t":86.985,"v":-3.4},{"t":87.482,"v":-0.5},{"t":87.978,"v":0},{"t":88.475,"v":-1},{"t":88.972,"v":-3.6},{"t":89.469,"v":-0.5},{"t":89.966,"v":-1.1},{"t":90.463,"v":0},{"t":91.953,"v":0},{"t":92.45,"v":-1.8},{"t":92.947,"v":-0.2},{"t":93.443,"v":-0.9},{"t":93.94,"v":-0.5},{"t":94.437,"v":0},{"t":94.934,"v":0},{"t":95.431,"v":-3.3},{"t":95.927,"v":-0.4},{"t":96.424,"v":0},{"t":96.921,"v":-3.2},{"t":97.418,"v":-3.8},{"t":97.915,"v":-2.1},{"t":98.412,"v":-4},{"t":98.908,"v":-0.5},{"t":99.405,"v":-1.1},{"t":99.902,"v":-1.7},{"t":100.399,"v":-2.5},{"t":100.896,"v":-0.6},{"t":101.392,"v":0},{"t":102.883,"v":0},{"t":103.38,"v":-1.8},{"t":103.876,"v":-0.8},{"t":104.373,"v":-2.1},{"t":104.87,"v":-3.8},{"t":105.367,"v":-2.1},{"t":105.864,"v":-1.9},{"t":106.361,"v":-1.1},{"t":106.857,"v":0},{"t":107.354,"v":0},{"t":107.851,"v":-3.6},{"t":108.348,"v":-0.5},{"t":108.845,"v":0},{"t":109.838,"v":0},{"t":110.335,"v":-2.6},{"t":110.832,"v":-0.4},{"t":113.813,"v":0},{"t":114.31,"v":-3.4},{"t":115.303,"v":-3.5},{"t":115.8,"v":-0.6},{"t":116.297,"v":-2.5},{"t":116.794,"v":-0.3},{"t":117.29,"v":-3.6},{"t":118.781,"v":-3.5},{"t":119.278,"v":-0.5},{"t":119.774,"v":0},{"t":120.271,"v":-3.5},{"t":120.768,"v":-1.8},{"t":121.265,"v":-3.2},{"t":121.762,"v":-3.5},{"t":122.259,"v":-1.1},{"t":122.755,"v":-0.4},{"t":123.252,"v":-3.8},{"t":123.749,"v":-0.5},{"t":124.246,"v":0},{"t":126.73,"v":0},{"t":127.227,"v":-2.1},{"t":127.723,"v":-0.3},{"t":129.214,"v":0},{"t":129.711,"v":-2.3},{"t":130.208,"v":-0.3},{"t":131.201,"v":0},{"t":131.698,"v":-3.8},{"t":132.195,"v":-2.7},{"t":132.692,"v":-2.4},{"t":133.188,"v":-0.3},{"t":134.182,"v":-0.3},{"t":134.679,"v":-1.6},{"t":135.176,"v":-2.4},{"t":135.672,"v":-0.8},{"t":136.169,"v":0},{"t":136.666,"v":0},{"t":137.163,"v":-0.7},{"t":137.66,"v":0},{"t":138.157,"v":0},{"t":138.653,"v":-3.2},{"t":139.15,"v":-3.8},{"t":139.647,"v":-0.5},{"t":140.144,"v":-0.7},{"t":140.641,"v":-3.8},{"t":141.137,"v":-4.1},{"t":141.634,"v":-2.2},{"t":142.628,"v":-2.2},{"t":143.125,"v":-0.7},{"t":143.621,"v":0},{"t":144.118,"v":0},{"t":144.615,"v":-1.9},{"t":145.112,"v":-1.9},{"t":145.609,"v":-0.3},{"t":146.106,"v":-2},{"t":146.602,"v":-4},{"t":147.099,"v":-0.6},{"t":147.596,"v":-3.4},{"t":148.093,"v":-3.8},{"t":148.59,"v":-0.5},{"t":149.086,"v":-1.8},{"t":149.583,"v":-3.5},{"t":150.08,"v":-0.5},{"t":150.577,"v":-1.7},{"t":151.074,"v":-0.2},{"t":151.57,"v":-4.2},{"t":152.067,"v":-0.6},{"t":152.564,"v":-3.4},{"t":153.061,"v":-3.5},{"t":153.558,"v":-0.5},{"t":154.055,"v":0},{"t":154.551,"v":-0.8},{"t":155.048,"v":0},{"t":157.035,"v":0},{"t":157.532,"v":-3.5},{"t":158.029,"v":-0.5},{"t":158.526,"v":-1.6},{"t":159.023,"v":-4.4},{"t":159.519,"v":-3.5},{"t":160.016,"v":-3},{"t":160.513,"v":-0.4},{"t":161.01,"v":-3.8},{"t":162.004,"v":-3.7},{"t":162.5,"v":-0.5},{"t":162.997,"v":0},{"t":165.481,"v":0},{"t":165.978,"v":-4},{"t":166.475,"v":-0.6},{"t":166.972,"v":0},{"t":167.468,"v":-0.8},{"t":167.965,"v":0},{"t":168.462,"v":0},{"t":168.959,"v":-1.1},{"t":169.456,"v":0},{"t":169.953,"v":-2.8},{"t":170.449,"v":-1.5},{"t":170.946,"v":-3.8},{"t":171.443,"v":-1.3},{"t":171.94,"v":-3.5},{"t":172.437,"v":-0.5},{"t":172.933,"v":-2},{"t":173.43,"v":-0.3},{"t":173.927,"v":-2.9},{"t":174.424,"v":-3.4},{"t":174.921,"v":-1.7},{"t":175.417,"v":-0.2},{"t":175.914,"v":-4.2},{"t":176.411,"v":-2.7},{"t":176.908,"v":-0.4},{"t":177.405,"v":-2.8},{"t":177.902,"v":-2.1},{"t":178.398,"v":-0.3},{"t":178.895,"v":-2.9},{"t":179.392,"v":-0.4},{"t":180.386,"v":0},{"t":180.882,"v":-3.1},{"t":181.379,"v":-2.2},{"t":181.876,"v":-3.5},{"t":182.373,"v":-0.7},{"t":182.87,"v":0},{"t":183.366,"v":-4.2},{"t":183.863,"v":-0.6},{"t":184.36,"v":-0.8},{"t":184.857,"v":0},{"t":185.354,"v":-2.7},{"t":185.851,"v":-1.1},{"t":186.347,"v":0},{"t":187.838,"v":0},{"t":188.335,"v":-2.6},{"t":188.831,"v":-2.7},{"t":189.328,"v":-1.4},{"t":189.825,"v":0},{"t":190.322,"v":-3.3},{"t":190.819,"v":-0.5},{"t":191.315,"v":-3.7},{"t":191.812,"v":-0.5},{"t":192.309,"v":-3.7},{"t":192.806,"v":-3.5},{"t":193.303,"v":-2.1},{"t":193.8,"v":-0.3},{"t":194.296,"v":-3.3},{"t":194.793,"v":-2.9},{"t":195.29,"v":-1.1},{"t":195.787,"v":0},{"t":196.284,"v":-1.8},{"t":196.78,"v":-0.2},{"t":197.774,"v":0},{"t":198.271,"v":0},{"t":198.72,"v":0}]},{"target":"fx.n2.gain","points":[{"t":0,"v":0},{"t":0.043,"v":0},{"t":0.539,"v":-0.6},{"t":1.036,"v":-1.6},{"t":1.533,"v":-0.5},{"t":2.03,"v":0},{"t":2.527,"v":-1.6},{"t":3.024,"v":-0.2},{"t":4.017,"v":0},{"t":4.514,"v":-2.1},{"t":5.011,"v":-1.5},{"t":5.508,"v":-0.2},{"t":8.985,"v":0},{"t":9.482,"v":-0.8},{"t":9.979,"v":0},{"t":11.966,"v":0},{"t":12.463,"v":-0.7},{"t":12.96,"v":0},{"t":13.457,"v":-2.5},{"t":13.953,"v":-2.5},{"t":14.45,"v":-1.6},{"t":14.947,"v":-1.5},{"t":15.444,"v":-0.2},{"t":18.922,"v":0},{"t":19.418,"v":-3.5},{"t":19.915,"v":-0.5},{"t":20.412,"v":0},{"t":22.399,"v":0},{"t":22.896,"v":-1.1},{"t":23.393,"v":0},{"t":23.89,"v":-0.5},{"t":24.386,"v":0},{"t":25.877,"v":-0.2},{"t":26.374,"v":-1},{"t":26.871,"v":0},{"t":27.864,"v":0},{"t":28.361,"v":-1.2},{"t":28.858,"v":0},{"t":30.845,"v":0},{"t":31.342,"v":-1},{"t":31.839,"v":-2.7},{"t":32.335,"v":-0.6},{"t":32.832,"v":0},{"t":34.82,"v":0},{"t":35.316,"v":-2.4},{"t":35.813,"v":-1.3},{"t":36.31,"v":0},{"t":36.807,"v":-1.7},{"t":37.304,"v":-1.5},{"t":37.8,"v":-0.2},{"t":38.297,"v":-1.1},{"t":38.794,"v":0},{"t":40.781,"v":0},{"t":41.278,"v":-0.5},{"t":41.775,"v":-1.3},{"t":42.272,"v":-0.5},{"t":43.265,"v":-0.9},{"t":43.762,"v":0},{"t":44.259,"v":-2},{"t":44.756,"v":-0.3},{"t":46.743,"v":-0.6},{"t":47.24,"v":-1.8},{"t":47.737,"v":-0.2},{"t":48.233,"v":0},{"t":48.73,"v":-2.5},{"t":49.227,"v":-0.3},{"t":50.718,"v":-0.2},{"t":51.214,"v":-2.1},{"t":51.711,"v":-0.3},{"t":54.195,"v":0},{"t":54.692,"v":-1.3},{"t":55.189,"v":0},{"t":55.686,"v":-1.4},{"t":56.182,"v":-2.2},{"t":56.679,"v":-0.3},{"t":57.176,"v":-0.4},{"t":57.673,"v":-2.1},{"t":58.17,"v":-0.3},{"t":58.667,"v":-2},{"t":59.163,"v":-0.3},{"t":59.66,"v":0},{"t":60.157,"v":-2.5},{"t":60.654,"v":-3},{"t":61.151,"v":-3},{"t":61.647,"v":-0.9},{"t":62.144,"v":-2.5},{"t":62.641,"v":-0.3},{"t":63.635,"v":0},{"t":64.131,"v":-2.8},{"t":64.628,"v":-1.2},{"t":65.125,"v":-2.9},{"t":65.622,"v":-2.2},{"t":66.119,"v":-0.7},{"t":66.616,"v":-1.4},{"t":67.112,"v":0},{"t":67.609,"v":0},{"t":68.106,"v":-1.4},{"t":68.603,"v":-0.2},{"t":69.596,"v":0},{"t":70.093,"v":-2.9},{"t":71.584,"v":-2.6},{"t":72.08,"v":-1},{"t":72.577,"v":0},{"t":73.571,"v":0},{"t":74.068,"v":-2},{"t":74.565,"v":-0.3},{"t":75.061,"v":-2},{"t":75.558,"v":-2.3},{"t":76.055,"v":-0.6},{"t":76.552,"v":-1.9},{"t":77.049,"v":-0.3},{"t":77.545,"v":-2.7},{"t":78.042,"v":-0.4},{"t":78.539,"v":-1.3},{"t":79.036,"v":-0.9},{"t":79.533,"v":0},{"t":80.029,"v":0},{"t":80.526,"v":-0.7},{"t":81.023,"v":0},{"t":81.52,"v":0},{"t":82.017,"v":-2.4},{"t":82.514,"v":-1.3},{"t":83.01,"v":0},{"t":83.507,"v":-0.5},{"t":84.004,"v":0},{"t":84.501,"v":-0.5},{"t":84.998,"v":0},{"t":85.494,"v":-2.8},{"t":85.991,"v":-0.4},{"t":86.488,"v":-2.8},{"t":86.985,"v":-0.4},{"t":87.482,"v":0},{"t":87.978,"v":-2.7},{"t":88.475,"v":-1.8},{"t":88.972,"v":-1.3},{"t":89.469,"v":-1},{"t":89.966,"v":-2.2},{"t":90.463,"v":-0.3},{"t":90.959,"v":-1.2},{"t":91.456,"v":-2.5},{"t":91.953,"v":-1.4},{"t":92.45,"v":-1},{"t":92.947,"v":-2.3},{"t":93.443,"v":-0.4},{"t":93.94,"v":-1.3},{"t":94.437,"v":0},{"t":94.934,"v":-2.6},{"t":95.431,"v":-0.4},{"t":95.927,"v":0},{"t":96.424,"v":-1.4},{"t":96.921,"v":-0.6},{"t":97.418,"v":0},{"t":98.412,"v":0},{"t":98.908,"v":-2.7},{"t":99.405,"v":-0.4},{"t":100.399,"v":0},{"t":100.896,"v":-0.9},{"t":101.392,"v":-0.7},{"t":101.889,"v":-1.6},{"t":102.386,"v":-0.2},{"t":102.883,"v":-2.2},{"t":103.38,"v":-0.3},{"t":104.87,"v":0},{"t":105.367,"v":-1.5},{"t":105.864,"v":-2.1},{"t":106.361,"v":-0.6},{"t":106.857,"v":-3.3},{"t":107.354,"v":-0.4},{"t":108.348,"v":0},{"t":108.845,"v":-1},{"t":109.341,"v":-1.8},{"t":109.838,"v":-0.2},{"t":110.335,"v":-1.8},{"t":110.832,"v":-0.3},{"t":111.329,"v":-2.9},{"t":111.825,"v":-1.4},{"t":112.322,"v":0},{"t":112.819,"v":-3.2},{"t":113.316,"v":-0.4},{"t":119.278,"v":-0.4},{"t":119.774,"v":-2},{"t":120.271,"v":-0.3},{"t":120.768,"v":-1},{"t":121.265,"v":0},{"t":121.762,"v":-0.8},{"t":122.259,"v":0},{"t":122.755,"v":-1.9},{"t":123.252,"v":-1.1},{"t":123.749,"v":0},{"t":124.246,"v":-2.9},{"t":124.743,"v":-0.4},{"t":125.239,"v":-2},{"t":125.736,"v":-1.1},{"t":126.73,"v":-0.8},{"t":127.227,"v":0},{"t":128.22,"v":0},{"t":128.717,"v":-1},{"t":129.214,"v":-1.5},{"t":129.711,"v":-1.3},{"t":130.208,"v":0},{"t":130.704,"v":-2.8},{"t":131.201,"v":-2.4},{"t":131.698,"v":-0.4},{"t":132.692,"v":0},{"t":133.188,"v":-1},{"t":134.182,"v":-1},{"t":134.679,"v":0},{"t":136.169,"v":0},{"t":136.666,"v":-2.8},{"t":137.163,"v":-0.4},{"t":137.66,"v":0},{"t":138.157,"v":-1.3},{"t":138.653,"v":-0.3},{"t":139.647,"v":0},{"t":140.144,"v":-2.1},{"t":140.641,"v":-0.3},{"t":141.137,"v":0},{"t":141.634,"v":-0.9},{"t":143.621,"v":-0.7},{"t":144.118,"v":-2.4},{"t":144.615,"v":-1},{"t":145.112,"v":0},{"t":145.609,"v":-2.2},{"t":146.106,"v":-1},{"t":146.602,"v":0},{"t":153.061,"v":0},{"t":153.558,"v":-2.9},{"t":154.055,"v":-0.4},{"t":154.551,"v":-2.6},{"t":155.048,"v":-0.4},{"t":157.532,"v":0},{"t":158.029,"v":-2.1},{"t":158.526,"v":-0.6},{"t":159.023,"v":0},{"t":160.513,"v":0},{"t":161.01,"v":-0.7},{"t":161.507,"v":0},{"t":162.5,"v":0},{"t":162.997,"v":-2.7},{"t":163.494,"v":-3.3},{"t":163.991,"v":-0.5},{"t":164.488,"v":0},{"t":164.984,"v":-1.4},{"t":165.481,"v":0},{"t":166.475,"v":0},{"t":166.972,"v":-2},{"t":167.468,"v":-3},{"t":167.965,"v":-0.4},{"t":168.462,"v":-0.2},{"t":168.959,"v":-2.3},{"t":169.456,"v":-0.3},{"t":169.953,"v":-1},{"t":170.449,"v":-0.2},{"t":171.443,"v":0},{"t":171.94,"v":-1.6},{"t":172.437,"v":-0.2},{"t":172.933,"v":-1.8},{"t":173.43,"v":-0.3},{"t":176.908,"v":0},{"t":177.405,"v":-1},{"t":177.902,"v":-0.7},{"t":178.398,"v":0},{"t":178.895,"v":0},{"t":179.392,"v":-1.8},{"t":179.889,"v":-1},{"t":180.386,"v":0},{"t":180.882,"v":-0.3},{"t":181.379,"v":-0.6},{"t":181.876,"v":-0.4},{"t":182.373,"v":-1.8},{"t":182.87,"v":-0.2},{"t":183.863,"v":-0.2},{"t":184.36,"v":-1.2},{"t":184.857,"v":0},{"t":185.851,"v":0},{"t":186.347,"v":-0.7},{"t":186.844,"v":-2.1},{"t":187.341,"v":-1.9},{"t":187.838,"v":-0.3},{"t":188.335,"v":0},{"t":188.831,"v":-1},{"t":189.328,"v":-2.5},{"t":189.825,"v":-0.3},{"t":190.322,"v":-1.1},{"t":190.819,"v":0},{"t":192.806,"v":0},{"t":193.303,"v":-0.5},{"t":193.8,"v":-1.2},{"t":194.296,"v":0},{"t":194.793,"v":0},{"t":195.29,"v":-1.4},{"t":195.787,"v":0},{"t":197.774,"v":0},{"t":198.271,"v":0},{"t":198.72,"v":0}]},{"target":"fx.n3.gain","points":[{"t":0,"v":0},{"t":0.043,"v":0},{"t":0.539,"v":-4.3},{"t":1.036,"v":-3.7},{"t":1.533,"v":-0.5},{"t":2.03,"v":0},{"t":2.527,"v":-2.8},{"t":3.024,"v":-0.6},{"t":3.52,"v":-3.2},{"t":4.017,"v":-2.9},{"t":4.514,"v":-3.8},{"t":5.011,"v":-2.2},{"t":5.508,"v":-4.4},{"t":6.004,"v":-0.6},{"t":6.501,"v":0},{"t":6.998,"v":-1.1},{"t":7.495,"v":0},{"t":7.992,"v":0},{"t":8.488,"v":-0.7},{"t":8.985,"v":0},{"t":9.482,"v":-3.1},{"t":9.979,"v":-0.4},{"t":10.476,"v":-5.2},{"t":10.973,"v":-1.8},{"t":11.469,"v":-0.3},{"t":11.966,"v":-3.7},{"t":12.463,"v":-2.1},{"t":12.96,"v":-0.3},{"t":13.457,"v":-3},{"t":14.45,"v":-3.2},{"t":14.947,"v":-4},{"t":15.444,"v":-1.6},{"t":15.941,"v":-4.8},{"t":16.437,"v":-2.2},{"t":16.934,"v":-2.1},{"t":17.431,"v":-0.3},{"t":17.928,"v":-1},{"t":18.425,"v":0},{"t":18.922,"v":0},{"t":19.418,"v":-1},{"t":19.915,"v":-0.4},{"t":20.412,"v":-2.2},{"t":20.909,"v":-0.3},{"t":21.902,"v":0},{"t":22.399,"v":-1.4},{"t":22.896,"v":-5.1},{"t":23.393,"v":-1.5},{"t":23.89,"v":-0.5},{"t":24.883,"v":-0.9},{"t":25.38,"v":-2.5},{"t":25.877,"v":-0.3},{"t":26.374,"v":-2.9},{"t":26.871,"v":-2.5},{"t":27.367,"v":-0.3},{"t":27.864,"v":-1.5},{"t":28.361,"v":-1.4},{"t":28.858,"v":0},{"t":29.355,"v":-1.6},{"t":29.851,"v":-5},{"t":30.348,"v":-0.7},{"t":30.845,"v":0},{"t":31.342,"v":-1.9},{"t":31.839,"v":-3.8},{"t":32.335,"v":-3.4},{"t":32.832,"v":-0.5},{"t":33.329,"v":0},{"t":33.826,"v":0},{"t":34.323,"v":-2.2},{"t":34.82,"v":-0.3},{"t":35.316,"v":-1.8},{"t":35.813,"v":-1},{"t":36.31,"v":0},{"t":36.807,"v":-2.9},{"t":37.304,"v":-0.4},{"t":39.291,"v":0},{"t":39.788,"v":-1.2},{"t":40.284,"v":0},{"t":40.781,"v":-4.5},{"t":41.278,"v":-2.3},{"t":41.775,"v":-1.4},{"t":42.272,"v":-1.3},{"t":42.769,"v":0},{"t":43.762,"v":0},{"t":44.259,"v":-3.3},{"t":44.756,"v":-0.4},{"t":45.253,"v":-1.1},{"t":45.749,"v":0},{"t":46.246,"v":0},{"t":46.743,"v":-5.4},{"t":47.24,"v":-0.7},{"t":47.737,"v":-1.8},{"t":48.233,"v":-0.2},{"t":50.718,"v":0},{"t":51.214,"v":-0.9},{"t":51.711,"v":-5},{"t":52.208,"v":-0.7},{"t":52.705,"v":-2.7},{"t":53.202,"v":-0.4},{"t":54.195,"v":0},{"t":54.692,"v":-0.9},{"t":55.189,"v":-0.9},{"t":55.686,"v":-1.9},{"t":56.182,"v":-0.3},{"t":58.17,"v":0},{"t":58.667,"v":-3},{"t":59.163,"v":-0.4},{"t":59.66,"v":0},{"t":60.157,"v":-4},{"t":60.654,"v":-4.6},{"t":61.151,"v":-2.4},{"t":61.647,"v":-1.4},{"t":62.144,"v":-3.6},{"t":62.641,"v":-3.9},{"t":63.138,"v":-1.4},{"t":63.635,"v":0},{"t":64.131,"v":-2.8},{"t":64.628,"v":-0.6},{"t":65.125,"v":-1.5},{"t":65.622,"v":-1.3},{"t":66.119,"v":0},{"t":66.616,"v":0},{"t":67.112,"v":-5.3},{"t":67.609,"v":-0.7},{"t":68.106,"v":-1.8},{"t":68.603,"v":-1.4},{"t":69.1,"v":0},{"t":69.596,"v":0},{"t":70.093,"v":-3.8},{"t":70.59,"v":-6.8},{"t":71.087,"v":-0.9},{"t":71.584,"v":-4.8},{"t":72.08,"v":-0.7},{"t":72.577,"v":-1.8},{"t":73.074,"v":-0.3},{"t":73.571,"v":-0.5},{"t":74.068,"v":-3.3},{"t":74.565,"v":-0.5},{"t":75.061,"v":-3},{"t":75.558,"v":-5},{"t":76.055,"v":-4.9},{"t":76.552,"v":-3.3},{"t":77.049,"v":-0.5},{"t":77.545,"v":-4.2},{"t":78.042,"v":-0.6},{"t":78.539,"v":0},{"t":80.029,"v":0},{"t":80.526,"v":-3.5},{"t":81.023,"v":-0.5},{"t":81.52,"v":-2.4},{"t":82.017,"v":-3},{"t":82.514,"v":-0.4},{"t":83.01,"v":0},{"t":83.507,"v":-3.4},{"t":84.004,"v":-2.4},{"t":84.501,"v":-3.7},{"t":84.998,"v":-3.5},{"t":85.494,"v":-1.8},{"t":85.991,"v":-0.2},{"t":86.488,"v":-2.2},{"t":86.985,"v":-1.8},{"t":87.482,"v":-0.3},{"t":87.978,"v":-3.9},{"t":88.475,"v":-5.9},{"t":88.972,"v":-2.2},{"t":89.469,"v":-5},{"t":89.966,"v":-2.3},{"t":90.463,"v":-0.3},{"t":90.959,"v":-2.6},{"t":91.456,"v":-5.2},{"t":91.953,"v":-0.8},{"t":92.45,"v":-0.6},{"t":92.947,"v":-2.8},{"t":93.443,"v":-0.5},{"t":93.94,"v":-2.8},{"t":94.437,"v":-0.4},{"t":94.934,"v":-3.3},{"t":95.431,"v":-4.1},{"t":95.927,"v":-0.6},{"t":96.424,"v":-4.4},{"t":96.921,"v":-1},{"t":97.418,"v":-4.1},{"t":97.915,"v":-3.3},{"t":98.412,"v":-1.8},{"t":98.908,"v":-0.2},{"t":99.405,"v":-0.8},{"t":99.902,"v":0},{"t":100.399,"v":-1.9},{"t":100.896,"v":-1.2},{"t":101.392,"v":0},{"t":102.883,"v":0},{"t":103.38,"v":-0.7},{"t":103.876,"v":0},{"t":105.864,"v":0},{"t":106.361,"v":-4.3},{"t":106.857,"v":-1.9},{"t":107.354,"v":-0.3},{"t":107.851,"v":-1},{"t":108.348,"v":0},{"t":108.845,"v":-1.3},{"t":109.341,"v":-0.9},{"t":109.838,"v":-1.8},{"t":110.335,"v":-1.7},{"t":110.832,"v":-0.7},{"t":111.329,"v":-1.9},{"t":111.825,"v":-1.9},{"t":112.322,"v":-0.3},{"t":112.819,"v":0},{"t":113.316,"v":-3.6},{"t":113.813,"v":-3.2},{"t":114.31,"v":-0.4},{"t":114.806,"v":-1},{"t":115.303,"v":-2.5},{"t":115.8,"v":-0.3},{"t":116.794,"v":0},{"t":117.29,"v":-3.9},{"t":117.787,"v":-0.5},{"t":118.284,"v":-1.7},{"t":118.781,"v":-0.9},{"t":119.278,"v":0},{"t":120.271,"v":0},{"t":120.768,"v":-2},{"t":121.265,"v":-0.3},{"t":123.749,"v":0},{"t":124.246,"v":-2},{"t":124.743,"v":-0.3},{"t":125.239,"v":-2.6},{"t":125.736,"v":-0.7},{"t":126.233,"v":0},{"t":126.73,"v":-1.4},{"t":127.227,"v":0},{"t":127.723,"v":0},{"t":128.22,"v":-1.9},{"t":128.717,"v":-4.9},{"t":129.214,"v":-3.5},{"t":129.711,"v":-0.5},{"t":130.208,"v":0},{"t":130.704,"v":0},{"t":131.201,"v":-2.1},{"t":131.698,"v":-0.3},{"t":132.195,"v":0},{"t":132.692,"v":-2.7},{"t":133.188,"v":-0.4},{"t":134.182,"v":0},{"t":134.679,"v":-1.5},{"t":135.176,"v":-0.2},{"t":140.144,"v":0},{"t":140.641,"v":-1.3},{"t":141.137,"v":-4.9},{"t":141.634,"v":-2},{"t":142.131,"v":-0.3},{"t":143.621,"v":0},{"t":144.118,"v":-4.4},{"t":144.615,"v":-4.6},{"t":145.112,"v":-0.6},{"t":145.609,"v":-4},{"t":146.106,"v":-0.9},{"t":146.602,"v":0},{"t":147.099,"v":0},{"t":147.596,"v":-2.3},{"t":148.093,"v":-0.3},{"t":148.59,"v":-1.6},{"t":149.086,"v":-3.6},{"t":149.583,"v":-0.5},{"t":150.08,"v":0},{"t":150.577,"v":-0.6},{"t":151.074,"v":0},{"t":152.067,"v":0},{"t":152.564,"v":-4.5},{"t":153.061,"v":-4.8},{"t":153.558,"v":-3.9},{"t":154.055,"v":-0.5},{"t":154.551,"v":-4.1},{"t":155.048,"v":-0.6},{"t":155.545,"v":-2},{"t":156.042,"v":-1.3},{"t":156.539,"v":-2.8},{"t":157.035,"v":-0.4},{"t":157.532,"v":-2.3},{"t":158.029,"v":-0.7},{"t":158.526,"v":0},{"t":159.023,"v":0},{"t":159.519,"v":-0.5},{"t":160.016,"v":0},{"t":160.513,"v":0},{"t":161.01,"v":-1.8},{"t":161.507,"v":-0.2},{"t":162.5,"v":-0.3},{"t":162.997,"v":-2},{"t":163.494,"v":-0.8},{"t":163.991,"v":0},{"t":164.488,"v":0},{"t":164.984,"v":-1.7},{"t":165.481,"v":-0.2},{"t":166.475,"v":0},{"t":166.972,"v":-4},{"t":167.468,"v":-0.5},{"t":167.965,"v":0},{"t":169.456,"v":0},{"t":169.953,"v":-3.4},{"t":170.449,"v":-4.1},{"t":170.946,"v":-3.4},{"t":171.443,"v":-5.6},{"t":171.94,"v":-0.8},{"t":172.437,"v":0},{"t":173.43,"v":0},{"t":173.927,"v":-4.8},{"t":174.424,"v":-0.7},{"t":174.921,"v":0},{"t":175.417,"v":0},{"t":175.914,"v":-1.5},{"t":176.411,"v":-3.4},{"t":176.908,"v":-0.5},{"t":177.405,"v":0},{"t":177.902,"v":-5.2},{"t":178.398,"v":-1.8},{"t":178.895,"v":-0.3},{"t":179.392,"v":0},{"t":179.889,"v":-1.5},{"t":180.386,"v":-3.5},{"t":180.882,"v":-2},{"t":181.379,"v":-0.7},{"t":181.876,"v":0},{"t":184.36,"v":0},{"t":184.857,"v":-0.6},{"t":185.354,"v":0},{"t":186.347,"v":0},{"t":186.844,"v":-1.6},{"t":187.341,"v":-3.1},{"t":187.838,"v":-0.4},{"t":188.335,"v":0},{"t":188.831,"v":-4.9},{"t":189.328,"v":-1.2},{"t":189.825,"v":0},{"t":190.322,"v":0},{"t":190.819,"v":-1.5},{"t":191.315,"v":-0.2},{"t":191.812,"v":0},{"t":192.309,"v":-3.4},{"t":192.806,"v":-2.5},{"t":193.303,"v":-2},{"t":193.8,"v":-0.3},{"t":194.296,"v":-3.7},{"t":194.793,"v":-0.5},{"t":195.29,"v":0},{"t":195.787,"v":0},{"t":196.284,"v":-1.1},{"t":196.78,"v":0},{"t":197.774,"v":0},{"t":198.271,"v":0},{"t":198.72,"v":0}]},{"target":"fx.n4.gain","points":[{"t":0,"v":0},{"t":6.004,"v":0},{"t":6.501,"v":-7.2},{"t":6.998,"v":-5.9},{"t":7.495,"v":-4.8},{"t":7.992,"v":-3.9},{"t":8.488,"v":-3.1},{"t":8.985,"v":-2.6},{"t":9.482,"v":-2.1},{"t":9.979,"v":-1.7},{"t":10.476,"v":-1.4},{"t":11.469,"v":-0.9},{"t":11.966,"v":-0.7},{"t":12.463,"v":-0.6},{"t":12.96,"v":-7.2},{"t":13.457,"v":-5.9},{"t":13.953,"v":-4.8},{"t":14.45,"v":-3.9},{"t":14.947,"v":-3.1},{"t":15.444,"v":-2.6},{"t":15.941,"v":-2.1},{"t":16.437,"v":-1.7},{"t":16.934,"v":-5.4},{"t":17.431,"v":-7.2},{"t":17.928,"v":-7.1},{"t":18.425,"v":-5.8},{"t":18.922,"v":-7.2},{"t":19.418,"v":-5.9},{"t":19.915,"v":-5.8},{"t":20.412,"v":-5.1},{"t":20.909,"v":-7.2},{"t":21.406,"v":-5.9},{"t":21.902,"v":-7.2},{"t":22.399,"v":-6.6},{"t":22.896,"v":-6.3},{"t":23.393,"v":-7.2},{"t":24.883,"v":-7.2},{"t":25.38,"v":-6},{"t":25.877,"v":-6.4},{"t":26.374,"v":-7.2},{"t":26.871,"v":-6.6},{"t":27.367,"v":-7.2},{"t":27.864,"v":-6.8},{"t":28.361,"v":-6.4},{"t":28.858,"v":-5.2},{"t":29.355,"v":-4.6},{"t":29.851,"v":-4.5},{"t":30.348,"v":-7.2},{"t":31.839,"v":-6.8},{"t":32.335,"v":-5.9},{"t":32.832,"v":-5},{"t":33.329,"v":-7.2},{"t":33.826,"v":-7.2},{"t":34.323,"v":-6.3},{"t":34.82,"v":-5.1},{"t":35.316,"v":-5.5},{"t":35.813,"v":-7.2},{"t":36.31,"v":-6.7},{"t":36.807,"v":-5.4},{"t":37.304,"v":-5.4},{"t":37.8,"v":-7.2},{"t":38.297,"v":-5.9},{"t":38.794,"v":-7.2},{"t":39.788,"v":-7.2},{"t":40.284,"v":-6.7},{"t":40.781,"v":-5.9},{"t":41.278,"v":-5.3},{"t":41.775,"v":-7.2},{"t":42.272,"v":-7},{"t":42.769,"v":-6.2},{"t":43.265,"v":-7.2},{"t":43.762,"v":-7.2},{"t":44.259,"v":-6.4},{"t":45.253,"v":-6},{"t":45.749,"v":-7.2},{"t":46.246,"v":-5.9},{"t":46.743,"v":-4.9},{"t":47.24,"v":-7.2},{"t":47.737,"v":-6.4},{"t":48.233,"v":-5.2},{"t":48.73,"v":-7},{"t":49.724,"v":-7.2},{"t":50.221,"v":-5.9},{"t":51.214,"v":-5.8},{"t":51.711,"v":-7.2},{"t":52.208,"v":-6.8},{"t":52.705,"v":-6},{"t":53.202,"v":-7.2},{"t":54.195,"v":-7.2},{"t":54.692,"v":-6.6},{"t":55.189,"v":-7.2},{"t":55.686,"v":-6.5},{"t":56.182,"v":-7.2},{"t":56.679,"v":-5.9},{"t":57.176,"v":-7.2},{"t":59.163,"v":-7.2},{"t":59.66,"v":-5.9},{"t":60.157,"v":-5.8},{"t":60.654,"v":-5.4},{"t":61.151,"v":-6.8},{"t":61.647,"v":-6.2},{"t":62.144,"v":-6},{"t":62.641,"v":-7.2},{"t":63.138,"v":-7.2},{"t":63.635,"v":-5.9},{"t":64.131,"v":-7.2},{"t":65.125,"v":-7.2},{"t":65.622,"v":-6.6},{"t":66.119,"v":-7.2},{"t":66.616,"v":-7.2},{"t":67.112,"v":-6.4},{"t":67.609,"v":-5.2},{"t":68.106,"v":-5},{"t":68.603,"v":-6.1},{"t":69.1,"v":-7.2},{"t":69.596,"v":-5.9},{"t":70.093,"v":-5.5},{"t":70.59,"v":-5.3},{"t":71.087,"v":-7.2},{"t":71.584,"v":-6.7},{"t":72.08,"v":-7.2},{"t":74.068,"v":-7.2},{"t":74.565,"v":-5.9},{"t":75.061,"v":-7.2},{"t":76.552,"v":-7},{"t":77.049,"v":-5.7},{"t":77.545,"v":-6.4},{"t":78.042,"v":-7.2},{"t":79.533,"v":-7.2},{"t":80.029,"v":-5.9},{"t":80.526,"v":-7.2},{"t":81.52,"v":-7.2},{"t":82.017,"v":-6.7},{"t":82.514,"v":-7.2},{"t":83.01,"v":-5.9},{"t":83.507,"v":-5.5},{"t":84.004,"v":-7.2},{"t":84.501,"v":-6.3},{"t":85.494,"v":-6.5},{"t":85.991,"v":-7.2},{"t":86.488,"v":-6.4},{"t":86.985,"v":-5.9},{"t":87.482,"v":-4.8},{"t":87.978,"v":-3.9},{"t":88.475,"v":-4.2},{"t":88.972,"v":-5.1},{"t":89.966,"v":-5.4},{"t":90.463,"v":-4.4},{"t":90.959,"v":-7.2},{"t":91.456,"v":-6.1},{"t":91.953,"v":-5.6},{"t":92.45,"v":-6.3},{"t":92.947,"v":-6.8},{"t":97.915,"v":-6.8},{"t":98.412,"v":-6.3},{"t":98.908,"v":-7.2},{"t":103.38,"v":-7.2},{"t":103.876,"v":-6.6},{"t":104.373,"v":-7.2},{"t":104.87,"v":-6.9},{"t":105.367,"v":-6.4},{"t":105.864,"v":-7.2},{"t":106.361,"v":-7},{"t":106.857,"v":-6},{"t":107.354,"v":-4.9},{"t":107.851,"v":-4.7},{"t":108.348,"v":-7.2},{"t":111.825,"v":-7.2},{"t":112.322,"v":-5.9},{"t":112.819,"v":-7.2},{"t":113.316,"v":-6.8},{"t":113.813,"v":-6.7},{"t":114.31,"v":-7.2},{"t":116.794,"v":-7.2},{"t":117.29,"v":-6.6},{"t":117.787,"v":-7.2},{"t":118.284,"v":-6.6},{"t":118.781,"v":-7.2},{"t":122.755,"v":-7.2},{"t":123.252,"v":-6.4},{"t":123.749,"v":-5.2},{"t":124.246,"v":-6.7},{"t":124.743,"v":-7.2},{"t":125.239,"v":-5.9},{"t":125.736,"v":-7.2},{"t":126.233,"v":-7.2},{"t":126.73,"v":-5.9},{"t":127.227,"v":-7.2},{"t":127.723,"v":-5.9},{"t":128.22,"v":-7.2},{"t":129.711,"v":-7.2},{"t":130.208,"v":-5.9},{"t":130.704,"v":-5.5},{"t":131.201,"v":-5},{"t":131.698,"v":-4.7},{"t":132.195,"v":-6.1},{"t":132.692,"v":-7.2},{"t":134.182,"v":-7.2},{"t":134.679,"v":-6.3},{"t":135.176,"v":-7.2},{"t":135.672,"v":-7.2},{"t":136.169,"v":-5.9},{"t":136.666,"v":-7},{"t":137.163,"v":-6.8},{"t":137.66,"v":-5.6},{"t":138.157,"v":-5.4},{"t":138.653,"v":-7.2},{"t":139.15,"v":-7.1},{"t":139.647,"v":-5.8},{"t":140.144,"v":-7.2},{"t":142.131,"v":-7.2},{"t":142.628,"v":-6.2},{"t":143.125,"v":-7.2},{"t":143.621,"v":-6.7},{"t":144.118,"v":-6.5},{"t":144.615,"v":-7.2},{"t":145.112,"v":-6.9},{"t":145.609,"v":-6.5},{"t":146.106,"v":-7.2},{"t":146.602,"v":-6.6},{"t":147.099,"v":-7.2},{"t":147.596,"v":-7.2},{"t":148.093,"v":-6.4},{"t":148.59,"v":-7.2},{"t":149.086,"v":-6.6},{"t":149.583,"v":-7.2},{"t":151.57,"v":-7.2},{"t":152.067,"v":-5.9},{"t":152.564,"v":-5.6},{"t":153.061,"v":-6.6},{"t":153.558,"v":-5.7},{"t":154.055,"v":-4.6},{"t":154.551,"v":-4.3},{"t":155.048,"v":-3.5},{"t":155.545,"v":-7.2},{"t":156.042,"v":-6.3},{"t":156.539,"v":-7.2},{"t":158.029,"v":-7.2},{"t":158.526,"v":-6.6},{"t":159.023,"v":-6},{"t":160.016,"v":-5.9},{"t":160.513,"v":-7.2},{"t":161.01,"v":-6.2},{"t":161.507,"v":-7.2},{"t":162.5,"v":-7.2},{"t":162.997,"v":-5.9},{"t":163.494,"v":-5.1},{"t":163.991,"v":-7.2},{"t":164.488,"v":-7.2},{"t":164.984,"v":-6.5},{"t":165.481,"v":-7.2},{"t":165.978,"v":-7},{"t":166.475,"v":-5.7},{"t":166.972,"v":-6.5},{"t":167.468,"v":-6.4},{"t":167.965,"v":-5.2},{"t":168.462,"v":-7.2},{"t":168.959,"v":-6.5},{"t":169.456,"v":-7.2},{"t":170.449,"v":-7.2},{"t":170.946,"v":-6.6},{"t":171.443,"v":-6},{"t":171.94,"v":-5.2},{"t":172.437,"v":-4.2},{"t":172.933,"v":-7},{"t":173.43,"v":-5.7},{"t":173.927,"v":-4.8},{"t":174.424,"v":-6.6},{"t":174.921,"v":-7.2},{"t":175.417,"v":-5.9},{"t":175.914,"v":-5.3},{"t":176.411,"v":-7.2},{"t":177.405,"v":-7.2},{"t":177.902,"v":-6.1},{"t":178.398,"v":-7.2},{"t":179.889,"v":-7.2},{"t":180.386,"v":-6.4},{"t":180.882,"v":-5.2},{"t":181.379,"v":-7.2},{"t":182.373,"v":-7.2},{"t":182.87,"v":-5.9},{"t":183.366,"v":-7.2},{"t":187.341,"v":-7.2},{"t":187.838,"v":-5.9},{"t":188.335,"v":-7.2},{"t":188.831,"v":-6.3},{"t":189.328,"v":-6.9},{"t":189.825,"v":-5.6},{"t":190.322,"v":-4.6},{"t":190.819,"v":-7.2},{"t":191.315,"v":-6.7},{"t":191.812,"v":-5.4},{"t":192.806,"v":-5.8},{"t":193.303,"v":-7.2},{"t":193.8,"v":-7.2},{"t":194.296,"v":-6.3},{"t":194.793,"v":-7.2},{"t":195.29,"v":-7.2},{"t":195.787,"v":-5.9},{"t":196.284,"v":-7.2},{"t":196.78,"v":-5.9},{"t":197.277,"v":-4.8},{"t":197.774,"v":-3.9},{"t":198.271,"v":-3.1},{"t":198.768,"v":-2.6},{"t":199.264,"v":-2.1},{"t":199.761,"v":-1.7},{"t":200.258,"v":-1.4},{"t":201.252,"v":-0.9},{"t":201.749,"v":-0.7},{"t":204.729,"v":-0.2},{"t":205.226,"v":0}]}]}'
+       data-fx-carve="{&quot;enabled&quot;:true,&quot;sources&quot;:[&quot;voice&quot;],&quot;strength&quot;:0.3}" data-fx-chain="{&quot;version&quot;:1,&quot;nodes&quot;:[{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n1&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:160,&quot;gain&quot;:-4.42,&quot;q&quot;:1.46}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n2&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:250,&quot;gain&quot;:-3.47,&quot;q&quot;:1.46}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n3&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:1600,&quot;gain&quot;:-6.8,&quot;q&quot;:1.46}},{&quot;type&quot;:&quot;gain&quot;,&quot;id&quot;:&quot;n4&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;gain&quot;:0}}]}" ></audio>
+      <hf-audio-group data-hf-id="hf-8l96" id="sfx" data-label="SFX" data-volume="1"></hf-audio-group>
+      <audio id="sfx-00" class="sfx" src="assets/sfx/whoosh-air.wav" data-start="0" data-duration="2.321" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="hook text rises"></audio>
+      <audio id="sfx-01" class="sfx" src="assets/sfx/ui-click.wav" data-start="5.469" data-duration="0.836" data-volume="0.2" data-track-index="6" data-audio-group="sfx" data-label="call pill lands"></audio>
+      <audio id="sfx-02" class="sfx" src="assets/sfx/whoosh-short.wav" data-start="9.094" data-duration="0.576" data-volume="0.12" data-track-index="6" data-audio-group="sfx" data-label="call pill exits"></audio>
+      <audio id="sfx-03" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="9.34" data-duration="1.248" data-volume="0.18" data-track-index="7" data-audio-group="sfx" data-label="B-roll fields in"></audio>
+      <audio id="sfx-04" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="15.89" data-duration="1.248" data-volume="0.14" data-track-index="6" data-audio-group="sfx" data-label="B-roll fields out"></audio>
+      <audio id="sfx-05" class="sfx" src="assets/sfx/whoosh-air.wav" data-start="18.362" data-duration="2.321" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="AI rises behind"></audio>
+      <audio id="sfx-06" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="20.64" data-duration="1.248" data-volume="0.18" data-track-index="7" data-audio-group="sfx" data-label="B-roll industries in"></audio>
+      <audio id="sfx-07" class="sfx" src="assets/sfx/scifi-click.wav" data-start="22.565" data-duration="1.392" data-volume="0.09" data-track-index="6" data-audio-group="sfx" data-label="shot change"></audio>
+      <audio id="sfx-08" class="sfx" src="assets/sfx/scifi-click.wav" data-start="24.315" data-duration="1.392" data-volume="0.09" data-track-index="6" data-audio-group="sfx" data-label="shot change"></audio>
+      <audio id="sfx-09" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="25.39" data-duration="1.248" data-volume="0.13" data-track-index="7" data-audio-group="sfx" data-label="B-roll industries out"></audio>
+      <audio id="sfx-10" class="sfx" src="assets/sfx/pop-dry.wav" data-start="38.772" data-duration="0.305" data-volume="0.22" data-track-index="6" data-audio-group="sfx" data-label="card fool's paradise"></audio>
+      <audio id="sfx-11" class="sfx" src="assets/sfx/scifi-click.wav" data-start="40.365" data-duration="1.392" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="highlight wipe"></audio>
+      <audio id="sfx-12" class="sfx" src="assets/sfx/whoosh-short.wav" data-start="41.754" data-duration="0.576" data-volume="0.11" data-track-index="7" data-audio-group="sfx" data-label="card out"></audio>
+      <audio id="sfx-13" class="sfx" src="assets/sfx/riser-metal.wav" data-start="43.836" data-media-start="4.2" data-duration="3.4" data-volume="0.14" data-track-index="6" data-audio-group="sfx" data-label="build into Tesla"></audio>
+      <audio id="sfx-14" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="44.19" data-duration="1.248" data-volume="0.16" data-track-index="7" data-audio-group="sfx" data-label="B-roll night in"></audio>
+      <audio id="sfx-15" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="46.79" data-duration="1.248" data-volume="0.2" data-track-index="7" data-audio-group="sfx" data-label="B-roll Tesla ramp in"></audio>
+      <audio id="sfx-16" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="51.59" data-duration="1.248" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="B-roll out, ROADSTER rises"></audio>
+      <audio id="sfx-17" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="52.551" data-duration="0.381" data-volume="0.18" data-track-index="7" data-audio-group="sfx" data-label="info chip"></audio>
+      <audio id="sfx-18" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="53.94" data-duration="1.248" data-volume="0.2" data-track-index="6" data-audio-group="sfx" data-label="B-roll flight in"></audio>
+      <audio id="sfx-19" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="58.74" data-duration="1.248" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="B-roll flight out"></audio>
+      <audio id="sfx-20" class="sfx" src="assets/sfx/pop-dry.wav" data-start="63.412" data-duration="0.305" data-volume="0.2" data-track-index="6" data-audio-group="sfx" data-label="card AI race"></audio>
+      <audio id="sfx-21" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="63.831" data-duration="0.381" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="RACE title"></audio>
+      <audio id="sfx-22" class="sfx" src="assets/sfx/whoosh-short.wav" data-start="67.644" data-duration="0.576" data-volume="0.11" data-track-index="6" data-audio-group="sfx" data-label="title clears"></audio>
+      <audio id="sfx-23" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="68.131" data-duration="0.381" data-volume="0.16" data-track-index="7" data-audio-group="sfx" data-label="ChatGPT"></audio>
+      <audio id="sfx-24" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="69.131" data-duration="0.381" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="Claude"></audio>
+      <audio id="sfx-25" class="sfx" src="assets/sfx/gear-tap.wav" data-start="69.636" data-duration="1.138" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="ChatGPT subline"></audio>
+      <audio id="sfx-26" class="sfx" src="assets/sfx/ui-click.wav" data-start="73.209" data-duration="0.836" data-volume="0.22" data-track-index="6" data-audio-group="sfx" data-label="Opus 5.5 chip"></audio>
+      <audio id="sfx-27" class="sfx" src="assets/sfx/whoosh-short.wav" data-start="74.354" data-duration="0.576" data-volume="0.11" data-track-index="6" data-audio-group="sfx" data-label="card out"></audio>
+      <audio id="sfx-28" class="sfx" src="assets/sfx/whoosh-air.wav" data-start="76.462" data-duration="2.321" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="1 MONTH rises"></audio>
+      <audio id="sfx-29" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="82.34" data-duration="1.248" data-volume="0.18" data-track-index="6" data-audio-group="sfx" data-label="B-roll datacenter in"></audio>
+      <audio id="sfx-30" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="87.59" data-duration="1.248" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="B-roll datacenter out"></audio>
+      <audio id="sfx-31" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="90.04" data-duration="1.248" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="timeline in"></audio>
+      <audio id="sfx-32" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="90.931" data-duration="0.381" data-volume="0.14" data-track-index="7" data-audio-group="sfx" data-label="1991"></audio>
+      <audio id="sfx-33" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="92.031" data-duration="0.381" data-volume="0.14" data-track-index="6" data-audio-group="sfx" data-label="2007"></audio>
+      <audio id="sfx-34" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="93.431" data-duration="0.381" data-volume="0.14" data-track-index="6" data-audio-group="sfx" data-label="2022"></audio>
+      <audio id="sfx-35" class="sfx" src="assets/sfx/gear-tap.wav" data-start="94.556" data-duration="1.138" data-volume="0.09" data-track-index="6" data-audio-group="sfx" data-label="tick"></audio>
+      <audio id="sfx-36" class="sfx" src="assets/sfx/gear-tap.wav" data-start="94.676" data-duration="1.138" data-volume="0.09" data-track-index="7" data-audio-group="sfx" data-label="tick"></audio>
+      <audio id="sfx-37" class="sfx" src="assets/sfx/gear-tap.wav" data-start="94.796" data-duration="1.138" data-volume="0.09" data-track-index="8" data-audio-group="sfx" data-label="tick"></audio>
+      <audio id="sfx-38" class="sfx" src="assets/sfx/gear-tap.wav" data-start="94.916" data-duration="1.138" data-volume="0.09" data-track-index="9" data-audio-group="sfx" data-label="tick"></audio>
+      <audio id="sfx-39" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="95.19" data-duration="1.248" data-volume="0.12" data-track-index="10" data-audio-group="sfx" data-label="timeline out"></audio>
+      <audio id="sfx-40" class="sfx" src="assets/sfx/gear-tap.wav" data-start="96.916" data-duration="1.138" data-volume="0.11" data-track-index="6" data-audio-group="sfx" data-label="year tick"></audio>
+      <audio id="sfx-41" class="sfx" src="assets/sfx/gear-tap.wav" data-start="97.336" data-duration="1.138" data-volume="0.11" data-track-index="7" data-audio-group="sfx" data-label="year tick"></audio>
+      <audio id="sfx-42" class="sfx" src="assets/sfx/gear-tap.wav" data-start="97.756" data-duration="1.138" data-volume="0.11" data-track-index="8" data-audio-group="sfx" data-label="year tick"></audio>
+      <audio id="sfx-43" class="sfx" src="assets/sfx/gear-tap.wav" data-start="98.196" data-duration="1.138" data-volume="0.11" data-track-index="6" data-audio-group="sfx" data-label="year tick"></audio>
+      <audio id="sfx-44" class="sfx" src="assets/sfx/gear-tap.wav" data-start="98.616" data-duration="1.138" data-volume="0.11" data-track-index="7" data-audio-group="sfx" data-label="year tick"></audio>
+      <audio id="sfx-45" class="sfx" src="assets/sfx/gear-tap.wav" data-start="99.016" data-duration="1.138" data-volume="0.12" data-track-index="8" data-audio-group="sfx" data-label="year tick"></audio>
+      <audio id="sfx-46" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="105.69" data-duration="1.248" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="countdown in"></audio>
+      <audio id="sfx-47" class="sfx" src="assets/sfx/gear-tap.wav" data-start="107.236" data-duration="1.138" data-volume="0.06" data-track-index="6" data-audio-group="sfx" data-label="clock"></audio>
+      <audio id="sfx-48" class="sfx" src="assets/sfx/gear-tap.wav" data-start="108.236" data-duration="1.138" data-volume="0.06" data-track-index="7" data-audio-group="sfx" data-label="clock"></audio>
+      <audio id="sfx-49" class="sfx" src="assets/sfx/gear-tap.wav" data-start="109.236" data-duration="1.138" data-volume="0.06" data-track-index="6" data-audio-group="sfx" data-label="clock"></audio>
+      <audio id="sfx-50" class="sfx" src="assets/sfx/gear-tap.wav" data-start="110.236" data-duration="1.138" data-volume="0.07" data-track-index="7" data-audio-group="sfx" data-label="clock"></audio>
+      <audio id="sfx-51" class="sfx" src="assets/sfx/gear-tap.wav" data-start="111.036" data-duration="1.138" data-volume="0.07" data-track-index="6" data-audio-group="sfx" data-label="clock"></audio>
+      <audio id="sfx-52" class="sfx" src="assets/sfx/pop-hard.wav" data-start="111.626" data-duration="1.175" data-volume="0.16" data-track-index="7" data-audio-group="sfx" data-label="নাই"></audio>
+      <audio id="sfx-53" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="111.74" data-duration="1.248" data-volume="0.18" data-track-index="8" data-audio-group="sfx" data-label="B-roll coding in"></audio>
+      <audio id="sfx-54" class="sfx" src="assets/sfx/typing.wav" data-start="112.15" data-media-start="2.0" data-duration="3.4" data-volume="0.09" data-track-index="9" data-audio-group="sfx" data-label="keyboard (diegetic)"></audio>
+      <audio id="sfx-55" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="118.49" data-duration="1.248" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="B-roll coding out"></audio>
+      <audio id="sfx-56" class="sfx" src="assets/sfx/whoosh-air.wav" data-start="124.262" data-duration="2.321" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="EXISTENCE rises"></audio>
+      <audio id="sfx-57" class="sfx" src="assets/sfx/scifi-click.wav" data-start="139.245" data-duration="1.392" data-volume="0.14" data-track-index="6" data-audio-group="sfx" data-label="caption shine"></audio>
+      <audio id="sfx-58" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="140.751" data-duration="0.381" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="animation bounce"></audio>
+      <audio id="sfx-59" class="sfx" src="assets/sfx/riser-metal.wav" data-start="138.966" data-media-start="5.0" data-duration="2.8" data-volume="0.13" data-track-index="7" data-audio-group="sfx" data-label="build into reveal"></audio>
+      <audio id="sfx-60" class="sfx" src="assets/sfx/scifi-impact.wav" data-start="141.401" data-duration="3.03" data-volume="0.24" data-track-index="6" data-audio-group="sfx" data-label="reveal card"></audio>
+      <audio id="sfx-61" class="sfx" src="assets/sfx/hit-bass.wav" data-start="141.408" data-duration="1.392" data-volume="0.1" data-track-index="8" data-audio-group="sfx" data-label="reveal card low end"></audio>
+      <audio id="sfx-62" class="sfx" src="assets/sfx/camera-click.wav" data-start="142.931" data-duration="1.008" data-volume="0.18" data-track-index="7" data-audio-group="sfx" data-label="cut back"></audio>
+      <audio id="sfx-63" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="145.49" data-duration="1.248" data-volume="0.18" data-track-index="6" data-audio-group="sfx" data-label="B-roll editing in"></audio>
+      <audio id="sfx-64" class="sfx" src="assets/sfx/pop-hard.wav" data-start="150.506" data-duration="1.175" data-volume="0.18" data-track-index="6" data-audio-group="sfx" data-label="4-5 hours stat"></audio>
+      <audio id="sfx-65" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="151.49" data-duration="1.248" data-volume="0.13" data-track-index="7" data-audio-group="sfx" data-label="B-roll editing out"></audio>
+      <audio id="sfx-66" class="sfx" src="assets/sfx/whoosh-air.wav" data-start="154.922" data-duration="2.321" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="40 MIN rises"></audio>
+      <audio id="sfx-67" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="159.351" data-duration="0.381" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="animation"></audio>
+      <audio id="sfx-68" class="sfx" src="assets/sfx/sparkle.wav" data-start="159.962" data-duration="3.5" data-volume="0.32" data-track-index="6" data-audio-group="sfx" data-label="sound effects (demo)"></audio>
+      <audio id="sfx-69" class="sfx" src="assets/sfx/whoosh-arrow.wav" data-start="161.128" data-duration="1.099" data-volume="0.2" data-track-index="7" data-audio-group="sfx" data-label="zoom in"></audio>
+      <audio id="sfx-70" class="sfx" src="assets/sfx/whoosh-short.wav" data-start="161.874" data-duration="0.576" data-volume="0.17" data-track-index="8" data-audio-group="sfx" data-label="zoom out"></audio>
+      <audio id="sfx-71" class="sfx" src="assets/sfx/whoosh-air.wav" data-start="163.812" data-duration="2.321" data-volume="0.15" data-track-index="6" data-audio-group="sfx" data-label="EDITED BY AI rises"></audio>
+      <audio id="sfx-72" class="sfx" src="assets/sfx/pop-dry.wav" data-start="169.662" data-duration="0.305" data-volume="0.2" data-track-index="6" data-audio-group="sfx" data-label="checklist card"></audio>
+      <audio id="sfx-73" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="171.511" data-duration="0.381" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="heading"></audio>
+      <audio id="sfx-74" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="173.651" data-duration="0.381" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="check 1"></audio>
+      <audio id="sfx-75" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="174.931" data-duration="0.381" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="check 2"></audio>
+      <audio id="sfx-76" class="sfx" src="assets/sfx/scifi-click.wav" data-start="177.005" data-duration="1.392" data-volume="0.18" data-track-index="6" data-audio-group="sfx" data-label="question mark"></audio>
+      <audio id="sfx-77" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="177.59" data-duration="1.248" data-volume="0.16" data-track-index="7" data-audio-group="sfx" data-label="editing timeline in"></audio>
+      <audio id="sfx-78" class="sfx" src="assets/sfx/gear-tap.wav" data-start="179.356" data-duration="1.138" data-volume="0.1" data-track-index="6" data-audio-group="sfx" data-label="clips"></audio>
+      <audio id="sfx-79" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="183.081" data-duration="0.381" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="animation keys"></audio>
+      <audio id="sfx-80" class="sfx" src="assets/sfx/pop-bubble.wav" data-start="183.701" data-duration="0.381" data-volume="0.13" data-track-index="6" data-audio-group="sfx" data-label="captions"></audio>
+      <audio id="sfx-81" class="sfx" src="assets/sfx/pop-hard.wav" data-start="184.876" data-duration="1.175" data-volume="0.18" data-track-index="6" data-audio-group="sfx" data-label="COMPLEX stamp"></audio>
+      <audio id="sfx-82" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="185.34" data-duration="1.248" data-volume="0.12" data-track-index="7" data-audio-group="sfx" data-label="timeline out"></audio>
+      <audio id="sfx-83" class="sfx" src="assets/sfx/whoosh-soft.wav" data-start="196.24" data-duration="1.248" data-volume="0.16" data-track-index="6" data-audio-group="sfx" data-label="end card in"></audio>
+      <audio id="sfx-84" class="sfx" src="assets/sfx/ui-success.wav" data-start="197.096" data-duration="1.55" data-volume="0.18" data-track-index="7" data-audio-group="sfx" data-label="signature"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+        // ======================= CAPTIONS =======================
+        // [start, end, top, big, tail, latinWeight, highlight, effect]
+        // tokens: "word@time"; "_" inside a token is a space; a token without @ inherits the previous time.
+        const CAPS = [
+          [0.0, 1.26, "আমি@0 আর@.36 আমার@.5 বন্ধু@.7", "তামিম@.92", "", "", 1],
+          [1.28, 4.02, "দুই@1.28 দিন@1.78 আগে@2.18", "রাত্রে@3.12 বেলা@3.78", "", "", 0],
+          [4.04, 5.3, "আটটা-নয়টা@4.04 বাজে@4.6 হয়তোবা@4.86", "", "", "", 0],
+          [5.32, 7.88, "ওই@5.32 সময়@5.5 ফোনে@5.86", "আলোচনা@6.86 করতেছিলাম@7.44", "", "", 0],
+          [7.9, 11.2, "যে@7.9 আমাদের@8.18 কি@8.74 আসলে@8.96", "গ্রামের@9.76 দিকে@10.7", "", "", 0],
+          [11.5, 13.5, "জায়গা-জমি@11.5", "কেনা@12.22 উচিত@12.5 কি@12.96 না@13.3", "", "", 0],
+          [13.52, 14.84, "এই@13.52 আলোচনার@13.88 কারণ@14.2 হচ্ছে@14.48", "", "", "", 0],
+          [14.86, 17.46, "যে@14.86 আমাদের@15.1", "ক্ষেত-খামারি@15.7", "করে@16.58 খাওয়া@16.8 উচিত@17.12", "", 1],
+          [17.5, 18.3, "কেন@17.5 করতেছিলাম?@17.78", "", "", "", 0],
+          [18.32, 21.0, "Cause,@18.32 AI@18.86 যেভাবে@19.26", "take_over@19.84", "করে@20.44 নিচ্ছে@20.68", "", 0],
+          [21.04, 21.82, "সব@21.04", "industry@21.28", "", "thin", 0],
+          [21.84, 24.5, "তো@21.84 আমাদের@22.16 আসলে@22.58", "কাজটা@22.78 কী@23.16 থাকবে@23.32", "পরে?@23.7", "", 1],
+          [24.58, 26.12, "এখন@24.58 তো@24.96 আমরা@25.1 এটা-ওটা@25.24", "manage@25.46", "করতেছি,@25.66", "bold", 0],
+          [26.16, 27.42, "আমাদের@26.16", "plan_make@26.6", "করতেছি@26.98", "", 0],
+          [27.46, 29.38, "যদিও@27.46 plan@28 আমরা@28.26", "AI_দিয়ে@28.54", "করি,@29.14", "", 0],
+          [29.42, 31.4, "কিন্তু@29.42 ওই,@29.68 হবে@29.82 না?@29.92 আমাদের@30.06 তো@30.3", "human_touch@30.44", "থাকেই@30.84", "serif", 0],
+          [31.46, 32.46, "ওই@31.46 দিন@31.7 আসলে@31.84 দূরে@32.08 নাই@32.3", "", "", "", 0],
+          [32.48, 34.7, "যে@32.48 আমাদের@32.64 থেকেও@33", "ভালো_plan@33.24", "AI@33.76 করে@34.18 ফেলবে@34.36", "", 0],
+          [34.78, 36.92, "আপনাদের@34.78 মধ্যে@35.34 এখন@35.58 যারা@35.86", "believe@36.16", "করেন@36.52", "thin", 0],
+          [36.94, 38.78, "যে,@36.94 আরে,@37.36 এই@37.78", "আসতে@37.96 দেরি@38.22 আছে@38.44", "", "", 0],
+          [41.96, 44.56, "You@41.96 have@42.1", "no_idea@42.22", "AI@42.8 এখন@43.32 কোথায়@43.66 চলে@44.08 গেছে@44.28", "", 1],
+          [44.58, 46.12, "তো,@44.58 ভালো@44.72 কথা,@44.96 আলোচনা@45.14 করে@45.5", "ঘুমাইলাম@45.7", "", "", 0],
+          [46.14, 47.22, "সকাল@46.14 বেলা@46.64", "উঠলাম@46.8", "", "", 0],
+          [47.34, 49.0, "উঠে@47.34 দেখি,@47.74", "Tesla@48.12", "উড়তেছে!@48.66", "", 0],
+          [49.04, 50.38, "Elon@49.04 Musk-এর@49.48 Tesla@49.88", "উড়তেছে!@50.34", "", "", 1],
+          [50.4, 51.36, "Tesla@50.4", "Roadster-রে@50.52", "", "thin", 0],
+          [51.38, 53.12, "আমার@51.38 নামটা@51.9 হয়তো@52.14", "ভুল@52.36 হইতে@52.7 পারে@52.86", "", "", 0],
+          [53.16, 54.3, "Roadster@53.16", "সম্ভবত@53.82", "", "", 0],
+          [54.36, 56.5, "ও,@54.36 এটা@54.54 উড়তেছে,@54.62", "literally@55.16", "উড়তেছে!@55.48", "serif", 0],
+          [56.52, 58.8, "মানে,@56.52 এটা@57.08 দেখার@57.4 পর,@57.68", "I_was_like…@58", "", "thin", 0],
+          [59.66, 62.36, "আমার,@59.66 আমার@60.06 এখন@60.28 আসলে@60.64", "কী_হবে?@60.84", "আমি@61.2 বুঝে@61.36 উঠতে@61.64 পারতেছিলাম@61.74 না@62.24", "", 1],
+          [62.38, 63.5, "আচ্ছা,@62.38 ঠিক@62.8 আছে,@63 হইলো।@63.12", "", "", "", 0],
+          [63.54, 67.36, "তারপর@63.54 হচ্ছে,@64.02 দুইটা@64.42 company@65.76", "উঠে@66.44 পড়ে@66.78 লাগছে@66.96", "", "", 1],
+          [74.6, 76.08, "আবারো@74.6", "Opus_5.5@74.97", "নিয়ে@75.59 আসছে,@75.75 না?@75.95", "", 0],
+          [76.11, 76.92, "", "লিখে@76.11 রাখেন!@76.63", "", "", 1],
+          [76.93, 78.74, "এক@76.93 মাসের@77.35 মধ্যে@77.57", "ChatGPT@77.89", "", "bold", 0],
+          [78.76, 81.22, "নতুন@78.76 একটা@79.1 model@79.26 নিয়ে_আসবে,@79.42", "আরো@80.34 better@80.5", "কাজ@80.74 করবে@80.96", "", 0],
+          [81.26, 82.84, "এবং@81.26 সবচেয়ে@81.54", "ভয়ানক@82", "বিষয়টা@82.26 কী@82.5 জানেন?@82.56", "", 1],
+          [82.86, 83.82, "এই@82.86", "LLM@82.86 model-গুলো@83.38", "", "", 0],
+          [83.84, 85.1, "মানে,@83.84 এই@84.04", "AI@84.48 model-গুলো@84.76", "", "", 0],
+          [85.14, 87.4, "এগুলো@85.14 না,@85.56 always@85.74 খালি@86.1", "strong@86.54", "হইতে@86.68 থাকতেছে@86.98", "", 1],
+          [87.42, 88.44, "এগুলোর@87.42", "growth@88.02", "", "thin", 0],
+          [88.48, 90.4, "এমন@88.48 না,@88.84 আগে@89.04 আমাদের@89.38", "সময়@89.74 ছিল@89.96", "", "", 0],
+          [90.52, 92.4, "কোনো@90.52 একটা@90.8 tech@91.18 আসছে,@91.4", "technology@91.64", "আসছে@92.1", "thin", 0],
+          [92.44, 94.28, "ওই@92.44 technology-র@92.72 পরে@93.08 কী@93.5 technology@93.58 হইতে@93.92 পারে,@94.14", "", "", "", 0],
+          [94.32, 95.84, "এটা@94.32 ভাবার@94.56 জন্য@94.84", "অনেক@95.12 টাইম@95.28", "পাইতাম@95.52", "", 1],
+          [95.96, 96.94, "অনেক@95.96 বড়@96.46 একটা@96.6 টাইম —@96.74", "", "", "", 0],
+          [96.96, 99.86, "", "TICKER", "পাইতাম@99.5", "", 0, "ticker"],
+          [99.88, 102.06, "আচ্ছা,@99.88 এর@100.64 পরে@100.88", "technology@101.1", "এমন@101.44 হইতে@101.62 পারে@101.88", "thin", 0],
+          [102.12, 106.1, "", "Right_now@102.12", "আপনি@102.92 শিখতেছেন…@103.46", "", 0],
+          [106.16, 107.16, "", "আপনাকে@106.16 সময়@106.62 দিবে@106.86 না।@107.02", "", "", 1],
+          [107.18, 108.4, "আপনি@107.18 যে@107.6 ভাবেন@107.7 যে,@108.14 আচ্ছা@108.24 —", "", "", "", 0],
+          [108.42, 110.64, "এই@108.42 technology,@108.56 এর@108.88 পরে@109.14 technology@109.6", "কী@110 হইতে@110.16 পারে@110.36", "", "", 0],
+          [110.7, 112.14, "আপনার@110.7 হাতে@111.08", "সেই@111.16 সময়টা@111.4", "আসলে@111.66 নাই।@111.94", "", 1],
+          [112.16, 115.8, "আমি@112.16 কয়েক@112.74 দিন@113.44 আগে@113.52 বন্ধু-বান্ধবদের@113.74", "vibe_coding@114.62", "শিখতে@115.1 বলতেছিলাম@115.3", "", 0],
+          [115.88, 119.3, "তারপর@115.88 কেমনে@116.44 AI@117.08", "কেমনে_use@117.36 করা_যায়@118.06", "এগুলো@118.42 শিখতে@118.56 বলতেছিলাম@118.72", "bold", 0],
+          [119.4, 120.66, "এই,@119.4 তোরা@119.76", "এইগুলো@120.08 কর@120.5", "", "", 1],
+          [120.68, 122.8, "হইতোবা@120.68 কোথাও@121.3", "একটা@121.82 চাকরি@122.06", "পাইয়া@122.22 যাবি@122.4", "", 0],
+          [123.66, 127.2, "But@123.66 এখন@123.98 আমি,@124.26 আমার@124.7 existence@125.12 নিয়েই@125.7", "হুমকির@126.08 মুখে@126.66", "আছি@126.88", "", 1],
+          [128.3, 130.0, "আমার@128.3 আসলে@128.92", "কাজটা@129.12 কী@129.44", "হইতে@129.58 পারে?@129.8", "", 0],
+          [130.12, 131.86, "আমার@130.12 বন্ধু-বান্ধবদের@130.42 কথা@130.98", "তো@131.12 বাদই@131.28 দিলাম@131.56", "", "", 0],
+          [131.88, 133.3, "আমার@131.88", "কাজটা@132.34 আসলে@132.64 কী@132.84 হবে?@133", "", "", 1],
+          [133.38, 135.44, "সবথেকে@133.38", "interesting@133.92", "কথাটা@134.26 আমি@134.56 এখন@134.66 বলবো@134.88", "serif", 0],
+          [135.48, 137.48, "সেটা@135.48 হচ্ছে,@135.6 আপনি@135.92 যে@136.42", "পুরো@136.54 ভিডিওটা@136.74", "দেখলেন@137.02 না?@137.3", "", 0],
+          [137.52, 139.52, "এখন@137.52 যে@138.18 ভিডিওটা@138.28 দেখতেছেন@138.52 —", "সুন্দর@138.94 caption@139.32", "", "", 0, "shine"],
+          [139.56, 141.6, "মাঝে@140.06 মধ্যে@140.68", "animation@140.82", "আসতেছে@141.24", "", 0, "bounce"],
+          [143.16, 145.62, "এই@143.16 ভিডিওটা@143.7 আমার@144.24", "edit@144.86", "করতে@145.2 —@145.4", "", 0],
+          [145.86, 147.9, "মানে,@145.86 এমনে@146.14 যেই@146.46 টাইপের@146.96", "animation,@147.46", "", "thin", 0],
+          [147.92, 148.66, "যেই@147.92 টাইপের@148.16", "caption@148.3", "", "thin", 0],
+          [148.68, 152.24, "এই@148.68 ভিডিওটা@148.92 সম্পূর্ণ@149.42 edit@149.74 করতে@149.88 হয়তোবা@150.04", "চার@150.54 থেকে@151.08 পাঁচ@151.24 ঘণ্টা@151.42", "লাগতো@151.72", "", 1],
+          [152.27, 153.72, "But@152.27 right@152.65 now,@152.91", "Claude@153.13", "", "", 0],
+          [153.75, 156.95, "এই@153.75 ভিডিওটা@154.35 হয়তো@154.81", "চল্লিশ@155.41 মিনিটে@155.69", "edit@155.93 করবে।@156.15 I@156.41 know@156.63 this.@156.81", "", 1],
+          [157.26, 158.92, "আপনারা@157.26 দেখতে@158.12 পারতেছেন@158.36 যে —@158.76", "", "", "", 0],
+          [158.96, 159.4, "", "music@158.96", "", "", 0, "music"],
+          [159.42, 160.34, "", "animation@159.42", "", "", 0, "bounce"],
+          [160.36, 161.26, "", "sound_effects@160.36", "", "", 0, "shake"],
+          [161.28, 161.94, "", "zoom_in@161.28", "", "", 0, "zoomin"],
+          [161.96, 162.62, "", "zoom_out@161.96", "", "", 0, "zoomout"],
+          [162.7, 163.6, "এত@162.7 কিছু@162.98 দেখতেছেন@163.1 না?@163.44", "", "", "", 0],
+          [163.64, 166.3, "সবকিছুই@163.64", "completely@164.3 AI@165.26", "দিয়ে@165.62 edit@165.82 হইছে।@166.1", "", 1],
+          [166.32, 169.5, "আপনাদের@166.32 উচিত@167.02 একটু@167.82", "ভয়@168.6 পাওয়া@168.84", "আসলে।@169.12", "", 1],
+          [179.21, 181.45, "thinking@179.21 task@179.65 —@179.9 মানে,@179.95 editing@180.13 না@180.35 তো", "complex@180.51 জিনিস@180.93", "আসলে@181.23", "", 0],
+          [181.49, 182.82, "video@181.49 editing@181.77 যেই@181.99 জিনিসটা,@182.19 কী@182.57 —", "", "", "", 0],
+          [182.85, 186.06, "এই@182.85 যে", "animation,@183.15 captions@183.77", "এগুলো@184.41 তো@184.79 complex@184.91 জিনিস,@185.57 right?@185.83", "bold", 0],
+          [186.18, 187.58, "এইগুলা@186.18 কে@186.74 কেমনে@186.86 করবে@187.04 আসলে?@187.3", "", "", "", 0],
+          [187.6, 189.56, "এইগুলা@187.6 করতে@188.56", "অনেক@188.82 টাইম@188.88", "লাইগা@189.14 যাবে@189.38", "", 1],
+          [189.58, 191.6, "", "And_guess_what…@189.58", "আমি@190.72", "thin", 0],
+          [192.01, 193.75, "এটা@192.01 নিয়ে@192.2 further@192.55", "ভাবারও@192.93 টাইম", "পাই@193.43 নাই।@193.63", "", 0],
+          [193.77, 195.43, "Here@193.77 you@194.15 can@194.37 see@194.49", "my_video.@194.73", "", "", 0],
+          [195.45, 196.5, "", "ভালো@195.45 থাকবেন।@196.25", "", "", 0],
+        ];
+        const TICKER = [["এক মাস", 96.96], ["দুই মাস", 97.38], ["এক বছর", 97.8], ["দুই বছর", 98.24], ["তিন বছর", 98.66], ["চার বছর", 99.06]];
+
+        const BN = /[ঀ-৿।॥]/;
+        const parse = (s, t0) => {
+          let t = t0;
+          return s
+            .split(" ")
+            .filter(Boolean)
+            .map((tok) => {
+              const at = tok.lastIndexOf("@");
+              let word = tok;
+              if (at > 0) {
+                t = parseFloat(tok.slice(at + 1));
+                word = tok.slice(0, at);
+              }
+              return { w: word.replace(/_/g, " "), t };
+            });
+        };
+        // one span per word; each run of Bangla / Latin picks its own font
+        const wordEl = (w) => {
+          const el = document.createElement("span");
+          el.className = "w";
+          w.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            part.split(/([ঀ-৿।॥‌‍]+(?:[-,?!…]*))/).forEach((run) => {
+              if (!run) return;
+              const s = document.createElement("span");
+              s.className = BN.test(run) ? "b" : "l";
+              s.textContent = run;
+              el.appendChild(s);
+            });
+          });
+          return el;
+        };
+        const caps = $("#caps");
+        const capEase = "power2.out";
+        CAPS.forEach((c, gi) => {
+          const [start, end, top, big, tail, wt, hl, fx] = c;
+          const g = document.createElement("div");
+          g.className = "cg";
+          g.id = "cg-" + gi;
+          const words = [];
+          const addLine = (cls, src) => {
+            if (!src) return null;
+            const ln = document.createElement("div");
+            ln.className = "ln " + cls;
+            parse(src, start).forEach((p, i, arr) => {
+              const el = wordEl(p.w);
+              ln.appendChild(el);
+              if (i < arr.length - 1) ln.appendChild(document.createTextNode(" "));
+              words.push({ el, t: p.t, kind: cls });
+            });
+            return ln;
+          };
+          const tLn = addLine("top", top);
+          if (tLn) g.appendChild(tLn);
+          let bigWrap = null;
+          if (big) {
+            const row = document.createElement("div");
+            row.className = "ln";
+            bigWrap = document.createElement("div");
+            bigWrap.className = "big w-" + (wt || "black") + (hl ? " has-hl" : "");
+            if (hl) {
+              const bar = document.createElement("div");
+              bar.className = "hl";
+              bigWrap.appendChild(bar);
+            }
+            const inner = document.createElement("div");
+            inner.className = "big-in";
+            if (fx === "ticker") {
+              const tick = document.createElement("span");
+              tick.className = "tick b";
+              tick.setAttribute("data-layout-allow-overflow", "");
+              tick.setAttribute("data-layout-allow-occlusion", "");
+              TICKER.forEach(([w]) => {
+                const ti = document.createElement("span");
+                ti.className = "ti";
+                ti.textContent = w;
+                tick.appendChild(ti);
+              });
+              inner.appendChild(tick);
+            } else {
+              parse(big, start).forEach((p, i, arr) => {
+                const el = wordEl(p.w);
+                inner.appendChild(el);
+                if (i < arr.length - 1) inner.appendChild(document.createTextNode(" "));
+                words.push({ el, t: p.t, kind: "big" });
+              });
+            }
+            bigWrap.appendChild(inner);
+            row.appendChild(bigWrap);
+            g.appendChild(row);
+          }
+          const aLn = addLine("tail", tail);
+          if (aLn) g.appendChild(aLn);
+          caps.appendChild(g);
+
+          // group in / out (+ hard kill)
+          tl.set(g, { visibility: "visible" }, start);
+          tl.fromTo(g, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, start);
+          const outAt = Math.max(start + 0.2, end - 0.12);
+          tl.to(g, { opacity: 0, duration: 0.12, ease: "power1.in" }, outAt);
+          tl.set(g, { opacity: 0, visibility: "hidden" }, end);
+
+          // word reveals
+          words.forEach(({ el, t, kind }) => {
+            const at = Math.max(start, Math.min(t, end - 0.15));
+            if (kind === "big") {
+              if (fx === "music") return;
+              if (fx === "bounce") {
+                const letters = [];
+                el.querySelectorAll("span").forEach((s) => {
+                  const txt = s.textContent;
+                  s.textContent = "";
+                  [...txt].forEach((ch) => {
+                    const L = document.createElement("span");
+                    L.style.display = "inline-block";
+                    L.textContent = ch;
+                    s.appendChild(L);
+                    letters.push(L);
+                  });
+                });
+                tl.fromTo(letters, { opacity: 0, y: 46, rotation: -8 }, { opacity: 1, y: 0, rotation: 0, duration: 0.42, ease: "back.out(2.6)", stagger: 0.035 }, at);
+              } else if (fx === "zoomin") {
+                tl.fromTo(el, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.25, duration: 0.32, ease: "power3.out" }, at);
+              } else if (fx === "zoomout") {
+                tl.fromTo(el, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 0.9, duration: 0.32, ease: "power3.out" }, at);
+              } else if (fx === "shake") {
+                tl.fromTo(el, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2)" }, at);
+                tl.to(el, { keyframes: { x: [0, -10, 9, -7, 5, -2, 0] }, duration: 0.45, ease: "none" }, at + 0.12);
+              } else {
+                tl.fromTo(el, { opacity: 0, y: 26, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.7)" }, at);
+              }
+            } else {
+              tl.fromTo(el, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.2, ease: capEase }, at);
+            }
+          });
+          if (hl && bigWrap) {
+            const firstBig = words.find((w) => w.kind === "big");
+            const at = firstBig ? Math.max(start, firstBig.t) : start;
+            const bigTs = words.filter((w) => w.kind === "big").map((w) => w.t);
+            const span = bigTs.length > 1 ? Math.min(1.4, Math.max(...bigTs) - at) : 0;
+            tl.fromTo(bigWrap.querySelector(".hl"), { scaleX: 0 }, { scaleX: 1, duration: 0.32 + span, ease: span ? "power1.inOut" : "power3.inOut" }, at + 0.04);
+          }
+          if (fx === "ticker") {
+            const items = Array.from(bigWrap.querySelectorAll(".ti"));
+            tl.fromTo(bigWrap, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.25, ease: "back.out(1.7)" }, start);
+            TICKER.forEach(([, t], i) => {
+              if (i === 0) return;
+              tl.to(items, { yPercent: -100 * i, duration: 0.24, ease: "back.out(1.6)" }, t);
+            });
+            tl.set(items, { yPercent: 0 }, end);
+          }
+          if (fx === "shine") {
+            const lastBig = words.filter((w) => w.kind === "big").pop();
+            tl.fromTo(lastBig.el, { textShadow: "0 0 0px rgba(255,214,120,0)" }, { textShadow: "0 0 34px rgba(255,214,120,0.95)", duration: 0.3, yoyo: true, repeat: 1, ease: "sine.inOut" }, lastBig.t + 0.05);
+          }
+          if (fx === "music") {
+            const el = words[0].el;
+            tl.fromTo(el, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, start);
+            tl.to(el, { scale: 1.06, duration: 0.11, yoyo: true, repeat: 3, ease: "sine.inOut" }, start + 0.3);
+          }
+        });
+
+        // caption colour follows the canvas under it (paper scenes => ink text, no shadow)
+        const SHADOW = "0 3px 16px rgba(0,0,0,0.42), 0 1px 3px rgba(0,0,0,0.3)";
+        const paperSpans = [[9.9, 16.45], [21.2, 25.95], [38.86, 41.95], [63.5, 74.55], [106.25, 112.3], [146.05, 152.05], [169.75, 178.1], [196.8, 198.7]];
+        tl.set(caps, { "--cap": "#fbf8f3", "--capsh": SHADOW }, 0);
+        paperSpans.forEach(([a, b]) => {
+          tl.set(caps, { "--cap": "#16130f", "--capsh": "none" }, a);
+          tl.set(caps, { "--cap": "#fbf8f3", "--capsh": SHADOW }, b);
+        });
+
+        // ======================= CAMERA MOVES =======================
+        const cam = $("#cam");
+        tl.fromTo(cam, { scale: 1 }, { scale: 1.05, duration: 5.2, ease: "sine.inOut" }, 0);
+        tl.set(cam, { scale: 1 }, 10.3);
+        tl.fromTo(cam, { scale: 1 }, { scale: 1.07, duration: 4.0, ease: "sine.inOut" }, 34.78);
+        tl.set(cam, { scale: 1 }, 39.4);
+        tl.to(cam, { scale: 1.13, duration: 0.28, ease: "power3.out" }, 59.66);
+        tl.to(cam, { scale: 1, duration: 0.45, ease: "power2.inOut" }, 62.3);
+        tl.fromTo(cam, { scale: 1 }, { scale: 1.08, duration: 1.5, ease: "sine.inOut" }, 81.26);
+        tl.set(cam, { scale: 1 }, 83.3);
+        tl.to(cam, { scale: 1.1, duration: 0.26, ease: "power3.out" }, 106.16);
+        tl.to(cam, { scale: 1, duration: 0.5, ease: "power2.inOut" }, 107.2);
+        tl.fromTo(cam, { scale: 1 }, { scale: 1.08, duration: 5.0, ease: "sine.inOut" }, 128.3);
+        tl.to(cam, { scale: 1, duration: 0.45, ease: "power2.inOut" }, 133.38);
+        tl.to(cam, { scale: 1.25, duration: 0.3, ease: "power3.out" }, 161.28);
+        tl.to(cam, { scale: 1, duration: 0.34, ease: "power3.out" }, 161.96);
+        tl.fromTo(cam, { scale: 1 }, { scale: 1.12, duration: 3.2, ease: "sine.inOut" }, 166.32);
+        tl.to(cam, { scale: 1, duration: 0.6, ease: "power2.inOut" }, 169.6);
+        tl.to(cam, { scale: 1.08, duration: 0.3, ease: "power3.out" }, 189.58);
+        tl.to(cam, { scale: 1, duration: 0.6, ease: "power2.inOut" }, 191.9);
+
+        // ======================= TEXT BEHIND THE SPEAKER =======================
+        // rises from behind the shoulders (clipped at y=940) and sinks back down
+        const behind = (sel, tin, tout, rise = 0.8) => {
+          tl.set(sel, { opacity: 1 }, tin);
+          tl.fromTo(sel, { y: 520 }, { y: 0, duration: rise, ease: "power3.out" }, tin);
+          tl.to(sel, { y: 560, duration: 0.55, ease: "power2.in" }, tout - 0.55);
+          tl.set(sel, { opacity: 0 }, tout);
+        };
+        behind("#tb0", 0.05, 5.15, 1.0);
+        behind("#tb1", 18.86, 21.6);
+        behind("#tb2", 52.3, 54.45, 0.6);
+        behind("#tb3", 76.93, 80.3);
+        behind("#tb4", 96.9, 100.1, 0.6);
+        behind("#tb5", 124.7, 127.4, 1.2);
+        behind("#tb6", 155.41, 157.3, 0.6);
+        behind("#tb7", 164.3, 166.5, 0.7);
+        // years ticker behind the head: each number rolls up as he says it
+        const rolls = $$(".tb4-n");
+        tl.set(rolls, { yPercent: 110 }, 0);
+        tl.set(rolls[0], { yPercent: 0 }, 96.9);
+        TICKER.forEach(([, t], i) => {
+          if (i === 0) return;
+          tl.to(rolls[i - 1], { yPercent: -110, duration: 0.26, ease: "power3.in" }, t - 0.02);
+          tl.fromTo(rolls[i], { yPercent: 110 }, { yPercent: 0, duration: 0.3, ease: "back.out(1.5)" }, t);
+        });
+
+        // ======================= A-ROLL OVERLAYS =======================
+        tl.fromTo("#pill", { opacity: 0, y: -170, scaleX: 0.45 }, { opacity: 1, y: 0, scaleX: 1, duration: 0.55, ease: "back.out(1.4)" }, 5.4);
+        tl.to("#pill", { opacity: 0, y: -170, scaleX: 0.5, duration: 0.4, ease: "power3.in" }, 9.05);
+        tl.fromTo("#pill .wave i", { scaleY: 0.25 }, { scaleY: 1, duration: 0.22, ease: "sine.inOut", yoyo: true, repeat: 15, stagger: { each: 0.09, from: "center" } }, 5.7);
+        // call timer: one span per second, flipped with seek-safe sets
+        const clock = $$("#pill-time .s");
+        tl.set(clock, { opacity: 0 }, 0);
+        clock.forEach((s, i) => {
+          tl.set(clock, { opacity: 0 }, 5.4 + i);
+          tl.set(s, { opacity: 1 }, 5.4 + i);
+        });
+        tl.fromTo("#chip", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" }, 52.6);
+        tl.to("#chip", { opacity: 0, y: 20, duration: 0.3, ease: "power2.in" }, 53.95);
+
+        // ======================= FULL-SCREEN SCENES =======================
+        const dim = $("#dim");
+        // B-roll: the page rises over the speaker, holds, then drops away
+        const rise = (sel, tin, tout, win, stacked = false) => {
+          const sc = $(sel);
+          tl.set(sc, { visibility: "visible" }, tin);
+          tl.fromTo(sc, { yPercent: 100, borderRadius: "70px 70px 0 0" }, { yPercent: 0, borderRadius: "0px 0px 0 0", duration: 0.62, ease: "power3.inOut" }, tin);
+          tl.fromTo(dim, { opacity: 0 }, { opacity: 0.6, duration: 0.62, ease: "power2.inOut" }, tin);
+          tl.fromTo(cam, { y: 0 }, { y: -140, duration: 0.62, ease: "power3.inOut" }, tin);
+          if (win) tl.fromTo(sel + " .win-in", { scale: 1.02 }, { scale: 1.1, duration: tout - tin, ease: "none" }, tin);
+          if (sc.querySelector(".win")) tl.fromTo(sel + " .win", { y: 90 }, { y: 0, duration: 0.8, ease: "power3.out" }, tin + 0.08);
+          if (stacked) {
+            tl.set(sc, { visibility: "hidden" }, tout);
+            return;
+          }
+          tl.to(sc, { yPercent: 100, borderRadius: "70px 70px 0 0", duration: 0.6, ease: "power3.inOut" }, tout - 0.6);
+          tl.to(dim, { opacity: 0, duration: 0.6, ease: "power2.inOut" }, tout - 0.6);
+          tl.to(cam, { y: 0, duration: 0.6, ease: "power3.inOut" }, tout - 0.6);
+          tl.set(sc, { visibility: "hidden" }, tout);
+        };
+        // cards: a quick, soft pop on and off
+        const card = (sel, tin, tout) => {
+          const sc = $(sel);
+          tl.set(sc, { visibility: "visible" }, tin);
+          tl.fromTo(sc, { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, tin);
+          tl.to(sc, { opacity: 0, duration: 0.24, ease: "power1.in" }, tout - 0.24);
+          tl.set(sc, { visibility: "hidden" }, tout);
+        };
+
+        // B1 fields
+        rise("#sc-fields", 9.6, 16.75, true);
+        tl.fromTo("#sc-fields .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.5, ease: "power2.out" }, 9.95);
+        tl.fromTo("#sc-fields .head", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 10.05);
+        tl.fromTo("#sc-fields .star", { rotation: -30, scale: 0.6 }, { rotation: 20, scale: 1, duration: 7.1, ease: "power1.out" }, 9.6);
+
+        // B2 every industry: three shots, one label each
+        rise("#sc-ind", 20.9, 26.25, true);
+        tl.fromTo("#sc-ind .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 21.25);
+        tl.fromTo("#sc-ind .head span", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.25 }, 21.3);
+        const indTags = $$("#sc-ind .ind-tag");
+        tl.set(indTags, { opacity: 0 }, 0);
+        [[21.2, 22.65], [22.65, 24.4], [24.4, 26.25]].forEach(([a, b], i) => {
+          tl.fromTo(indTags[i], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, a);
+          tl.set(indTags[i], { opacity: 0 }, b);
+        });
+        tl.fromTo("#sc-ind .star", { rotation: 0, scale: 0.7 }, { rotation: 50, scale: 1, duration: 5.35, ease: "power1.out" }, 20.9);
+
+        // B2b night -> next morning, covered by the Tesla page
+        rise("#sc-morning", 44.45, 47.75, true, true);
+        tl.fromTo("#sc-morning .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 44.8);
+        tl.fromTo("#sc-morning .head", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 44.9);
+        tl.fromTo("#morning-glow", { opacity: 0.25, scale: 0.7 }, { opacity: 1, scale: 1.2, duration: 3.3, ease: "sine.in" }, 44.45);
+
+        // C1 fool's paradise
+        card("#sc-fool", 38.8, 41.95);
+        tl.fromTo("#fool-1", { opacity: 0, y: 24 }, { opacity: 0.8, y: 0, duration: 0.35, ease: "power2.out" }, 38.9);
+        tl.fromTo("#fool-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: "power3.inOut" }, 40.4);
+        tl.fromTo("#fool-2", { opacity: 0, y: 30, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 40.44);
+        tl.fromTo("#fool-3", { opacity: 0, y: 24 }, { opacity: 0.8, y: 0, duration: 0.35, ease: "power2.out" }, 41.1);
+        tl.fromTo("#sc-fool .star", { rotation: 0, scale: 0.7 }, { rotation: 45, scale: 1, duration: 3.2, ease: "power1.out" }, 38.8);
+
+        // B3 Tesla ramp
+        rise("#sc-ramp", 47.05, 52.45, true);
+        tl.fromTo("#sc-ramp .tag", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: "power2.out" }, 47.5);
+        tl.fromTo("#sc-ramp .head span", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.12 }, 47.55);
+        tl.fromTo("#sc-ramp .tag .live", { opacity: 1 }, { opacity: 0.25, duration: 0.5, yoyo: true, repeat: 7, ease: "sine.inOut" }, 47.5);
+        tl.fromTo("#ramp-glow", { scale: 0.8, x: 0 }, { scale: 1.15, x: 120, duration: 5.4, ease: "sine.inOut" }, 47.05);
+
+        // B4 Tesla flight (user's B-roll)
+        rise("#sc-flight", 54.2, 59.6, true);
+        tl.fromTo("#sc-flight .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 54.6);
+        tl.fromTo("#flight-stat", { opacity: 0, scale: 0.7, rotation: -6 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.45, ease: "back.out(2)" }, 55.2);
+        tl.fromTo("#flight-glow", { scale: 0.85, y: 0 }, { scale: 1.15, y: 100, duration: 5.4, ease: "sine.inOut" }, 54.2);
+
+        // C2 the AI race
+        card("#sc-race", 63.45, 74.55);
+        tl.fromTo("#sc-race .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.4, ease: "power2.out" }, 63.55);
+        tl.fromTo("#race-a .race-name", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 68.2);
+        tl.fromTo("#race-vs", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 68.75);
+        tl.fromTo("#race-b .race-name", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 69.2);
+        tl.fromTo("#race-a-sub", { opacity: 0, y: 16 }, { opacity: 0.7, y: 0, duration: 0.35, ease: "power2.out" }, 69.66);
+        tl.to("#race-a", { opacity: 0.35, duration: 0.4, ease: "power1.inOut" }, 72.0);
+        tl.fromTo("#race-opus", { opacity: 0, scale: 0.4, rotation: -8 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.2)" }, 73.34);
+        tl.fromTo("#sc-race .star", { rotation: 0 }, { rotation: 140, duration: 11.1, ease: "none" }, 63.45);
+
+        // C2 opening: title + two racing lanes, cleared before the names arrive
+        tl.fromTo("#race-title > div", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)", stagger: 0.18 }, 63.7);
+        const lanes = $$("#race-lanes .lane-fill");
+        tl.fromTo(lanes, { scaleX: 0 }, { scaleX: 0.35, duration: 0.6, ease: "power2.out", stagger: 0.1 }, 64.3);
+        tl.to(lanes[0], { scaleX: 0.7, duration: 0.7, ease: "power2.inOut" }, 65.1);
+        tl.to(lanes[1], { scaleX: 0.78, duration: 0.7, ease: "power2.inOut" }, 65.6);
+        tl.to(lanes[0], { scaleX: 0.95, duration: 0.6, ease: "power2.inOut" }, 66.4);
+        tl.to(lanes[1], { scaleX: 0.92, duration: 0.6, ease: "power2.inOut" }, 66.8);
+        tl.to(["#race-title", "#race-lanes"], { opacity: 0, y: -40, duration: 0.3, ease: "power2.in" }, 67.8);
+
+        // B7 data centre
+        rise("#sc-dc", 82.6, 88.45, true);
+        tl.fromTo("#sc-dc .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 83.15);
+        tl.fromTo("#sc-dc .head span", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.5 }, 85.0);
+        tl.fromTo("#dc-glow", { scale: 0.8, x: 0 }, { scale: 1.2, x: 160, duration: 5.85, ease: "sine.inOut" }, 82.6);
+
+        // MG1 time between big shifts: the line draws down as he talks, then the gaps collapse
+        rise("#sc-tl", 90.3, 96.05, false);
+        tl.fromTo("#sc-tl .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 90.65);
+        tl.fromTo("#tl-fill", { scaleY: 0 }, { scaleY: 0.03, duration: 0.3, ease: "power2.out" }, 90.85);
+        [["#tl-n1", 91.0, 0.03], ["#tl-n2", 92.1, 0.42], ["#tl-n3", 93.5, 0.77]].forEach(([n, t, f]) => {
+          tl.to("#tl-fill", { scaleY: f, duration: 0.5, ease: "power2.inOut" }, t - 0.4);
+          tl.fromTo(n, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: "back.out(1.6)" }, t);
+        });
+        tl.fromTo("#tl-g1", { opacity: 0 }, { opacity: 0.55, duration: 0.4, ease: "power1.out" }, 91.7);
+        tl.fromTo("#tl-g2", { opacity: 0 }, { opacity: 0.55, duration: 0.4, ease: "power1.out" }, 93.0);
+        tl.to("#tl-fill", { scaleY: 1, duration: 0.5, ease: "power2.inOut" }, 94.55);
+        tl.fromTo("#sc-tl .tl-tick", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.18, ease: "back.out(2.5)", stagger: 0.12 }, 94.6);
+        tl.fromTo("#tl-now", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 95.1);
+        tl.fromTo("#tl-glow", { scale: 0.8 }, { scale: 1.2, duration: 5.75, ease: "sine.inOut" }, 90.3);
+
+        // MG2 no time to adapt: the ring empties while he says it, then the B-roll page covers it
+        const ticks = $("#ring-ticks");
+        for (let i = 0; i < 60; i++) {
+          const a = (i / 60) * Math.PI * 2;
+          const r1 = i % 5 === 0 ? 268 : 276;
+          const ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          ln.setAttribute("x1", 300 + Math.sin(a) * r1);
+          ln.setAttribute("y1", 300 - Math.cos(a) * r1);
+          ln.setAttribute("x2", 300 + Math.sin(a) * 290);
+          ln.setAttribute("y2", 300 - Math.cos(a) * 290);
+          ln.setAttribute("stroke", "rgba(22,19,15," + (i % 5 === 0 ? 0.55 : 0.22) + ")");
+          ln.setAttribute("stroke-width", i % 5 === 0 ? 4 : 2);
+          ticks.appendChild(ln);
+        }
+        rise("#sc-time", 105.95, 112.65, false, true);
+        tl.fromTo("#sc-time .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 106.3);
+        tl.fromTo("#ring", { scale: 0.85, rotation: -20, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: "back.out(1.4)" }, 106.2);
+        tl.fromTo("#ring-arc", { strokeDashoffset: 0 }, { strokeDashoffset: 1445.13, duration: 5.4, ease: "power1.in" }, 106.3);
+        tl.fromTo("#ring-t1", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 106.62);
+        tl.to("#ring-t1", { opacity: 0, scale: 0.8, duration: 0.2, ease: "power2.in" }, 111.5);
+        tl.set("#ring-t2", { opacity: 0 }, 0);
+        tl.fromTo("#ring-t2", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 111.66);
+        tl.fromTo("#sc-time .star", { rotation: 0 }, { rotation: 80, duration: 6.7, ease: "none" }, 105.95);
+
+        // B5 vibe coding
+        rise("#sc-code", 112.0, 119.35, true);
+        tl.fromTo("#sc-code .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 112.4);
+        tl.fromTo("#sc-code .head span", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.3 }, 114.3);
+        tl.fromTo("#code-glow", { scale: 0.8, y: 0 }, { scale: 1.2, y: -120, duration: 7.35, ease: "sine.inOut" }, 112.0);
+
+        // C3 the reveal — a hard, quiet beat
+        tl.set("#sc-reveal", { visibility: "visible" }, 141.62);
+        tl.fromTo("#sc-reveal .head", { scale: 1.08 }, { scale: 1, duration: 1.5, ease: "power2.out" }, 141.62);
+        tl.fromTo("#rev-glow", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1.1, duration: 1.5, ease: "power2.out" }, 141.62);
+        tl.set("#sc-reveal", { visibility: "hidden" }, 143.14);
+
+        // B6 manual editing
+        rise("#sc-edit", 145.75, 152.35, true);
+        tl.fromTo("#sc-edit .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 146.15);
+        tl.fromTo("#edit-stat", { opacity: 0, scale: 0.6, rotation: 8 }, { opacity: 1, scale: 1, rotation: 4, duration: 0.5, ease: "back.out(2.2)" }, 150.54);
+        tl.fromTo("#sc-edit .star", { rotation: 0, scale: 0.7 }, { rotation: -40, scale: 1, duration: 6.6, ease: "power1.out" }, 145.75);
+
+        // C4 checklist
+        card("#sc-check", 169.7, 178.4);
+        tl.fromTo("#ck-h1", { opacity: 0, y: 24 }, { opacity: 0.7, y: 0, duration: 0.4, ease: "power2.out" }, 169.85);
+        tl.fromTo("#ck-h2", { opacity: 0, y: 30, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 171.57);
+        tl.fromTo("#ck-1", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 173.55);
+        tl.fromTo("#ck-1-p", { strokeDasharray: 30, strokeDashoffset: 30 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 173.74);
+        tl.fromTo("#ck-2", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 174.85);
+        tl.fromTo("#ck-2-p", { strokeDasharray: 30, strokeDashoffset: 30 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 175.02);
+        tl.fromTo("#ck-3", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 176.9);
+        tl.fromTo("#ck-3-q", { opacity: 0, scale: 0.3, rotation: -30 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, 177.1);
+        tl.fromTo("#sc-check .star", { rotation: 0 }, { rotation: 90, duration: 8.7, ease: "none" }, 169.7);
+
+        // MG3 the editing timeline fills as he lists what makes editing hard
+        rise("#sc-nle", 177.85, 186.2, false);
+        tl.fromTo("#sc-nle .kicker", { opacity: 0, y: 20 }, { opacity: 0.72, y: 0, duration: 0.45, ease: "power2.out" }, 178.3);
+        tl.fromTo("#nle", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 178.1);
+        tl.fromTo("#nle .c-v1", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power2.out", stagger: 0.15 }, 179.4);
+        tl.fromTo("#nle .c-voice", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out" }, 179.8);
+        tl.fromTo("#nle .c-music", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out" }, 181.6);
+        tl.fromTo("#nle .c-anim", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out", stagger: 0.1 }, 183.15);
+        tl.fromTo("#nle .k-anim", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2.5)", stagger: 0.06 }, 183.3);
+        tl.fromTo("#nle .c-caps", { scaleX: 0 }, { scaleX: 1, duration: 0.18, ease: "power2.out", stagger: 0.05 }, 183.77);
+        tl.fromTo("#nle .c-sfx", { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.2, ease: "back.out(2)", stagger: 0.07 }, 184.35);
+        tl.fromTo("#nle-play", { x: 0 }, { x: 790, duration: 7.6, ease: "none" }, 178.4);
+        tl.fromTo("#nle-stamp", { opacity: 0, scale: 1.8, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.35, ease: "back.out(1.8)" }, 184.91);
+        tl.fromTo("#nle-glow", { scale: 0.8 }, { scale: 1.2, duration: 8.35, ease: "sine.inOut" }, 177.85);
+
+        // End card
+        rise("#sc-end", 196.5, 198.7 + 0.6, false);
+        tl.fromTo("#end-1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 196.75);
+        tl.fromTo("#end-2", { opacity: 0, y: 20 }, { opacity: 0.7, y: 0, duration: 0.45, ease: "power2.out" }, 197.1);
+        tl.fromTo("#end-3", { opacity: 0, y: 30, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.7)" }, 197.3);
+        tl.fromTo("#end-4", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)" }, 197.6);
+        tl.fromTo("#sc-end .star", { rotation: 0, scale: 0.6 }, { rotation: 30, scale: 1, duration: 2.2, ease: "power1.out" }, 196.5);
+
+        // caption self-check (every group must be hidden right after its end)
+        CAPS.forEach((c, gi) => {
+          const el = document.getElementById("cg-" + gi);
+          tl.seek(c[1] + 0.01);
+          const cs = getComputedStyle(el);
+          if (cs.opacity !== "0" && cs.visibility !== "hidden") console.warn("[caption-lint] group " + gi + " visible after end");
+        });
+        tl.seek(0);
+
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+{
+  "_comment": "Every value is copied from build code: Editing/edit/tools/reel05_build.py (9:16, current), build.py (16:9 film), lib.py (palette) and 10-18-26/edit/index.html (Abu Sayed/Montserrat reel). Units are CSS px on the stated canvas. Font stack puts Poppins first so Latin uses Poppins and Bengali falls through to the Bengali face.",
+  "palette": {
+    "sage_world": {"GREEN": "#4f8462", "SAGE": "#90b79c", "SAGE_L": "#b8d8c2", "INK": "#0c1f15", "DEEP": "#2f6b47", "text": "#ffffff", "pill_bg": "rgba(10,26,17,.84)", "pill_border": "1.5px solid rgba(144,183,156,.55)"},
+    "orange_paper": {"cap": "#fbf8f3", "accent": "#f26419", "accent_deep": "#c2410c", "grad": "linear-gradient(115deg,#ffa43a 0%,#f26419 52%,#d9480f 100%)", "ink": "#16130f", "paper": "#f4f0ea"}
+  },
+  "presets": [
+    {
+      "id": "SAGE-REEL-916",
+      "name": "Sage Reel Caption (lead + boxed punch word)",
+      "status": "verified (reel_build, reel02-05)",
+      "aspect": "9:16", "canvas": [1080, 1920], "fps": 30,
+      "content": ["Bangla talking-head explainers", "Claude/AI tutorial reels", "Shorts/Reels"],
+      "client": "own channel",
+      "font_stack": {"lead": "'Poppins','Hind Siliguri',sans-serif", "punch": "'Poppins','Opekkha',sans-serif"},
+      "lead": {"weight": 400, "size_px": 50, "line_height": 1.25, "color": "#ffffff", "text_shadow": "0 1px 2px rgba(0,0,0,.3)", "margin_bottom_px": 12},
+      "punch": {"weight": 700, "size_px": 92, "line_height": 1.16, "color": "#ffffff", "nowrap": true,
+                "box": {"background": "#4f8462", "radius_px": 16, "padding_px": "2 28 12", "shadow": "0 2px 6px rgba(0,0,0,.16)", "transform_origin": "0 50%"}},
+      "tail": {"weight": 400, "size_px": 46, "color": "#ffffff", "text_shadow": "0 1px 2px rgba(0,0,0,.3)", "padding_bottom_px": 12},
+      "solo_line": {"weight": 700, "size_px": 72, "font": "Poppins + Opekkha", "used_when": "caption has no *emphasis*"},
+      "layout": {"left_px": 50, "width_px": 980, "align": "center", "bottom_px": {"stack_mode": 1010, "full_mode": 330}, "max_punch_chars": 16, "max_box_width_px": 980,
+                 "line_break": "punch longer than 24 plain chars => punch = tokens up to emphasis end, rest becomes tail"},
+      "case": "as spoken (Bangla has no case; English words as typed)",
+      "letter_spacing": "0 (no tracking)",
+      "stroke": "none",
+      "emphasis": "wrap word(s) in *stars* in the CAPS list; they become the boxed punch",
+      "animation": {
+        "group_in": "opacity 0->1, 0.10 s, at start-0.03 s",
+        "lead_words": "each word: opacity 0->1, y 12->0, blur 4px->0, 0.24 s, ease power3.out, at its word time",
+        "punch_box": "scaleX 0->1, 0.30 s, ease expo.out, at first punch word - 0.04 s",
+        "punch_text": "x -26->0, 0.34 s, power3.out; first punch word opacity 0->1 0.2 s; other punch words rest at opacity .42 then ->1 0.14 s, no earlier than 0.21 s after first",
+        "out": "group opacity ->0, 0.08 s at end+0.02; visibility hidden at end+0.12"},
+      "timing": {
+        "word_time": "start + (last_word_start - start) * cumulative_chars_before_word / total_chars",
+        "hold": "if next caption starts <0.8 s after end, end = next_start - 0.04 (captions cover ~100% of speech)",
+        "no_cross_cut": "end = cut_time - 0.04 when a seam falls inside",
+        "reframe_settle_s": 0.35, "reframe_window_s": 0.12,
+        "group_data_start_offset_s": -0.04},
+      "safe_zone": "captions never move across a full<->stack framing switch; stack mode (panel in bottom half) places caption at bottom:1010 clear of the face at (940,420 on 1920x1080 source)"
+    },
+    {
+      "id": "SAGE-FILM-169",
+      "name": "Sage Film Caption (16:9, hero + subtitle variants)",
+      "status": "verified (build.py)",
+      "aspect": "16:9", "canvas": [1920, 1080], "fps": 30,
+      "font_stack": {"lead": "'Poppins','Hind Siliguri',sans-serif", "punch": "'Poppins','Opekkha',sans-serif"},
+      "lead": {"weight": 300, "size_px": "var(--ls) default 42", "line_height": 1.25, "color": "#ffffff", "text_shadow": "0 1px 2px rgba(0,0,0,.28)", "margin_bottom_px": 10},
+      "lead_solo": {"weight": 500, "size_px": "var(--ls) default 46"},
+      "lead_ink": {"color": "#10261a", "weight": 500, "text_shadow": "none", "used_when": "white paper card behind"},
+      "hero": {"lead_size": "0.44 x punch size, weight 400", "solo_size": "0.62 x punch size, Poppins/Opekkha 700, line-height 1.15"},
+      "punch": {"weight": 700, "size_px": "var(--pp) or var(--ps) default 78", "line_height": 1.18, "color": "#ffffff",
+                "box": {"background": "#4f8462", "radius_px": 14, "padding_px": "2 26 10"}},
+      "tail": {"weight": 400, "size": "0.5 x punch size", "padding_bottom_px": 10},
+      "subtitle_position": {"class": "cap-sub", "bottom_px": 86, "align": "center"},
+      "pill": {"font": "Poppins 600", "size_px": 32, "letter_spacing": ".02em", "bg": "rgba(10,26,17,.84)", "border": "1.5px solid rgba(144,183,156,.55)", "padding_px": "12 30", "radius": "999px"},
+      "animation": {"word_in": "opacity 0->1, y 12->0, blur 4->0, 0.26 s, power3.out", "pill_in": "opacity 0->1, y 14->0, scale .92->1, 0.4 s, expo.out", "out": "opacity->0, y -6, blur 6px, 0.2 s, power2.in at end+0.08"},
+      "sizing_rule": "fit to max width using HarfBuzz widths (tools/textfit.py); order: full size -> shrink to >=0.82 -> emphasised run only -> two lines"
+    },
+    {
+      "id": "ORANGE-BN-REEL-916",
+      "name": "Orange/Paper Storytelling Caption (Abu Sayed + Montserrat)",
+      "status": "verified (10-18-26/edit/index.html, 'AI Edited This')",
+      "aspect": "9:16", "canvas": [1080, 1920], "fps": 30,
+      "content": ["personal-story reel", "Bangla with English words mixed"],
+      "font_stack": {"bn": "'Abu Sayed','Montserrat',sans-serif", "en": "'Montserrat',sans-serif", "serif": "'Instrument Serif',serif"},
+      "layout": {"container": "left 0, top 1150, width 1080, height 330", "group_inset_px": 50, "align": "center", "text_color": "#fbf8f3"},
+      "rows": "top (context, 1 line) / big (key phrase, boxed) / tail (continuation); any row may be empty",
+      "top": {"size_px": 46, "line_height": 1.32, "latin_size_px": 40, "weight": 400},
+      "tail": {"size_px": 46, "line_height": 1.32, "latin_size_px": 38, "weight": 300},
+      "big_variants": {
+        "default/black": {"latin_weight": 900, "latin_size_px": 96, "letter_spacing": "-0.035em", "box_size_px": 112, "line_height": 1.12},
+        "bold": {"latin_weight": 700, "latin_size_px": 96, "letter_spacing": "-0.035em"},
+        "thin": {"latin_weight": 200, "latin_size_px": 96, "letter_spacing": "-0.01em"},
+        "serif": {"font": "Instrument Serif italic", "weight": 400, "size_px": 124, "letter_spacing": "-0.01em"}
+      },
+      "highlight": {"flag": 1, "element": ".hl", "background": "linear-gradient(115deg,#ffa43a 0%,#f26419 52%,#d9480f 100%)", "radius_px": 10, "inset": "top 18% bottom 6%", "transform_origin": "0 50%"},
+      "effects": ["shine", "bounce", "ticker"],
+      "data_format": "[start,end,top,big,tail,latinWeight('' |thin|bold|serif),highlight(0|1),effect]; tokens 'word@time', '_' = space",
+      "ink_rule": "caption colour flips to ink on paper-coloured scenes, no shadow"
+    }
+  ],
+  "section_hook_and_cta_reel": {
+    "hook_h1": {"font": "Poppins/Opekkha", "weight": 700, "size_px": 96, "line_height": 1.12, "text_shadow": "0 1px 3px rgba(0,0,0,.3)", "top_px": 1070, "left": 60, "width": 960, "em_box": "background #4f8462, radius 16, padding 0 22 8", "in": "opacity 0->1,y 30->0,blur 6->0, .42 s stagger .08 power3.out", "duration_s": "HOOK_DUR"},
+    "hook_h2_pill": {"weight": 600, "size_px": 40, "padding_px": "12 32"},
+    "end_pill": {"weight": 600, "size_px": 40, "top_px": 1700, "padding_px": "16 36", "bg": "rgba(10,26,17,.9)", "border": "1.5px solid rgba(144,183,156,.6)", "shows_at": "REEL_DUR - 1.85 s"}
+  }
+}
