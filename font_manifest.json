@@ -1,0 +1,406 @@
+{
+ "generated": "2026-10-31",
+ "fonts": [
+  {
+   "file": "Fonts\\Abu_Sayed\\AbuSayed.ttf",
+   "family": "Abu Sayed",
+   "subfamily": "Regular",
+   "full_name": "Codepotro Abu Sayed",
+   "postscript": "CodepotroAbuSayed",
+   "version": "Codepotro Abu Sayed;Version 0.800",
+   "weight_class": 400,
+   "variable_axes": [],
+   "designer": "Jayed Ahsan Saad",
+   "licence_url": "http://scripts.sil.org/OFL",
+   "sha256": "0c526d825f437bcedee5cd97da5bd7dee2f04a0867543253ef9ca4357ddc90db",
+   "bytes": 156988
+  },
+  {
+   "file": "Fonts\\Hind_Siliguri\\HindSiliguri-Bold.ttf",
+   "family": "Hind Siliguri",
+   "subfamily": "Bold",
+   "full_name": "Hind Siliguri Bold",
+   "postscript": "HindSiliguri-Bold",
+   "version": "Version 1.001;PS 1.0;hotconv 1.0.86;makeotf.lib2.5.63406; ttfautohint (v1.5.33-1714) -l 8 -r 50 -G 200 -x 13 -D latn -f beng -w G -W -c -X \"\"",
+   "weight_class": 700,
+   "variable_axes": [],
+   "designer": "Jyotish Sonowal",
+   "licence_url": "http://scripts.sil.org/OFL",
+   "sha256": "d135765781d1a4aebc7dd4a2af221427ec8689060121d8a48b19bca3eeb3977e",
+   "bytes": 287660
+  },
+  {
+   "file": "Fonts\\Hind_Siliguri\\HindSiliguri-Light.ttf",
+   "family": "Hind Siliguri",
+   "subfamily": "Light",
+   "full_name": "Hind Siliguri Light",
+   "postscript": "HindSiliguri-Light",
+   "version": "Version 1.001;PS 1.0;hotconv 1.0.86;makeotf.lib2.5.63406; ttfautohint (v1.5.33-1714) -l 8 -r 50 -G 200 -x 13 -D latn -f beng -w G -W -c -X \"\"",
+   "weight_class": 300,
+   "variable_axes": [],
+   "designer": "Jyotish Sonowal",
+   "licence_url": "http://scripts.sil.org/OFL",
+   "sha256": "9d55d0dcc9b54cb0870ae5d5b24caf8d3ca9f304cd90ee6f4fe1e6c8ef833e5a",
+   "bytes": 259344
+  },
+  {
+   "file": "Fonts\\Hind_Siliguri\\HindSiliguri-Medium.ttf",
+   "family": "Hind Siliguri",
+   "subfamily": "Medium",
+   "full_name": "Hind Siliguri Medium",
+   "postscript": "HindSiliguri-Medium",
+   "version": "Version 1.001;PS 1.0;hotconv 1.0.86;makeotf.lib2.5.63406; ttfautohint (v1.5.33-1714) -l 8 -r 50 -G 200 -x 13 -D latn -f beng -w G -W -c -X \"\"",
+   "weight_class": 500,
+   "variable_axes": [],
+   "designer": "Jyotish Sonowal",
+   "licence_url": "http://scripts.sil.org/OFL",
+   "sha256": "f2759c530d647720a4d4e99faef3c2d150e1452193a9c83fb81c8d29805c13ea",
+   "bytes": 266516
+  },
+  {
+   "file": "Fonts\\Hind_Siliguri\\HindSiliguri-Regular.ttf",
+   "family": "Hind Siliguri",
+   "subfamily": "Regular",
+   "full_name": "Hind Siliguri Regular",
+   "postscript": "HindSiliguri-Regular",
+   "version": "Version 1.001;PS 1.0;hotconv 1.0.86;makeotf.lib2.5.63406; ttfautohint (v1.5.33-1714) -l 8 -r 50 -G 200 -x 13 -D latn -f beng -w G -W -c -X \"\"",
+   "weight_class": 400,
+   "variable_axes": [],
+   "designer": "Jyotish Sonowal",
+   "licence_url": "http://scripts.sil.org/OFL",
+   "sha256": "45071a7da902a74877f432722f525d00502d61aef71fca4cab3da8a23156c33d",
+   "bytes": 250052
+  },
+  {
+   "file": "Fonts\\Hind_Siliguri\\HindSiliguri-SemiBold.ttf",
+   "family": "Hind Siliguri",
+   "subfamily": "SemiBold",
+   "full_name": "Hind Siliguri SemiBold",
+   "postscript": "HindSiliguri-SemiBold",
+   "version": "Version 1.001;PS 1.0;hotconv 1.0.86;makeotf.lib2.5.63406; ttfautohint (v1.5.33-1714) -l 8 -r 50 -G 200 -x 13 -D latn -f beng -w G -W -c -X \"\"",
+   "weight_class": 600,
+   "variable_axes": [],
+   "designer": "Jyotish Sonowal",
+   "licence_url": "http://scripts.sil.org/OFL",
+   "sha256": "92a9a68240883467830b87b2568242a59e68d4535e9e15f087650e12c4aaca83",
+   "bytes": 272740
+  },
+  {
+   "file": "Fonts\\Instrument_Serif\\InstrumentSerif-Italic.ttf",
+   "family": "Instrument Serif",
+   "subfamily": "Italic",
+   "full_name": "Instrument Serif Italic",
+   "postscript": "InstrumentSerif-Italic",
+   "version": "Version 1.000; ttfautohint (v1.8.4.7-5d5b);gftools[0.9.27]",
+   "weight_class": 400,
+   "variable_axes": [],
+   "designer": "Rodrigo Fuenzalida",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "08939b8bdf534afec24ae0ef5e03f948940cd9a8fe08e7fecbad040e62327385",
+   "bytes": 71592
+  },
+  {
+   "file": "Fonts\\Legacy_v1_Anek_Bangla\\AnekBangla.ttf",
+   "family": "Anek Bangla",
+   "subfamily": "Medium",
+   "full_name": "Anek Bangla Medium",
+   "postscript": "AnekBangla-Medium",
+   "version": "Version 1.003",
+   "weight_class": 500,
+   "variable_axes": [
+    [
+     "wght",
+     100.0,
+     500.0,
+     800.0
+    ],
+    [
+     "wdth",
+     75.0,
+     100.0,
+     125.0
+    ]
+   ],
+   "designer": "Sulekha Rajkumar (Bangla), Yesha Goshar (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "8b4ec2eaf7400ea9903718a4addf3135475292e6e0b04db7735d0f999289d919",
+   "bytes": 1344456
+  },
+  {
+   "file": "Fonts\\Legacy_v1_Noto_Sans_Bengali\\NotoSansBengali.ttf",
+   "family": "Noto Sans Bengali",
+   "subfamily": "Regular",
+   "full_name": "Noto Sans Bengali Regular",
+   "postscript": "NotoSansBengali-Regular",
+   "version": "Version 3.011",
+   "weight_class": 400,
+   "variable_axes": [
+    [
+     "wght",
+     100.0,
+     400.0,
+     900.0
+    ],
+    [
+     "wdth",
+     62.5,
+     100.0,
+     100.0
+    ]
+   ],
+   "designer": "Joana Ranito - Universal Thirst; Jelle Bosma - Monotype Design Team",
+   "licence_url": "https://openfontlicense.org",
+   "sha256": "dcd42978094e584a849c84a51450eeac40c8826057d566ea6d4b9627a403a05a",
+   "bytes": 463668
+  },
+  {
+   "file": "Fonts\\Legacy_v1_Tiro_Bangla\\TiroBangla-Italic.ttf",
+   "family": "Tiro Bangla",
+   "subfamily": "Italic",
+   "full_name": "Tiro Bangla Italic",
+   "postscript": "TiroBangla-Italic",
+   "version": "Version 1.52",
+   "weight_class": 400,
+   "variable_axes": [],
+   "designer": "Bangla: John Hudson & Fiona Ross, assisted by Neelakash Kshetrimayum. Latin: John Hudson with Paul Hanslow, assisted by Kaja Słojewska.",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "deb8330a56697cfabef8ff393c6d36af60531229b138bf9a3ffe834330cb03e1",
+   "bytes": 329576
+  },
+  {
+   "file": "Fonts\\Legacy_v1_Tiro_Bangla\\TiroBangla-Regular.ttf",
+   "family": "Tiro Bangla",
+   "subfamily": "Regular",
+   "full_name": "Tiro Bangla Regular",
+   "postscript": "TiroBangla-Regular",
+   "version": "Version 1.52",
+   "weight_class": 400,
+   "variable_axes": [],
+   "designer": "Bangla: John Hudson & Fiona Ross. Latin: John Hudson.",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "a763523dc3f90a71962cb8d9400b8f0a86b40b2cb01676f165101a2967127ae4",
+   "bytes": 323776
+  },
+  {
+   "file": "Fonts\\Montserrat\\Montserrat-Italic-VF.ttf",
+   "family": "Montserrat",
+   "subfamily": "Thin Italic",
+   "full_name": "Montserrat Thin Italic",
+   "postscript": "Montserrat-ThinItalic",
+   "version": "Version 9.000",
+   "weight_class": 100,
+   "variable_axes": [
+    [
+     "wght",
+     100.0,
+     100.0,
+     900.0
+    ]
+   ],
+   "designer": "Julieta Ulanovsky",
+   "licence_url": "https://openfontlicense.org",
+   "sha256": "51607f316bc020e59f03cbf51543eecffbea501c0b31d73e5b82927c5cca442c",
+   "bytes": 762376
+  },
+  {
+   "file": "Fonts\\Montserrat\\Montserrat-VF.ttf",
+   "family": "Montserrat",
+   "subfamily": "Thin",
+   "full_name": "Montserrat Thin",
+   "postscript": "Montserrat-Thin",
+   "version": "Version 9.000",
+   "weight_class": 100,
+   "variable_axes": [
+    [
+     "wght",
+     100.0,
+     100.0,
+     900.0
+    ]
+   ],
+   "designer": "Julieta Ulanovsky",
+   "licence_url": "https://openfontlicense.org",
+   "sha256": "0f7b311b2f3279e4eef9b2f968bcdbab6e28f4daeb1f049f4f278a902bcd82f7",
+   "bytes": 744936
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-Black.ttf",
+   "family": "Poppins",
+   "subfamily": "Black",
+   "full_name": "Poppins Black",
+   "postscript": "Poppins-Black",
+   "version": "4.004",
+   "weight_class": 900,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "d82aaaf98a9283f9a8edd24e51173337d8eaf09e25cd3d98831f8ec8461748a1",
+   "bytes": 153440
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-Bold.ttf",
+   "family": "Poppins",
+   "subfamily": "Bold",
+   "full_name": "Poppins Bold",
+   "postscript": "Poppins-Bold",
+   "version": "4.004",
+   "weight_class": 700,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "983676516167748b74de6f4771fb384c664fd913acb8b471122ecacf5da5ea6c",
+   "bytes": 155996
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-ExtraBold.ttf",
+   "family": "Poppins",
+   "subfamily": "ExtraBold",
+   "full_name": "Poppins ExtraBold",
+   "postscript": "Poppins-ExtraBold",
+   "version": "4.004",
+   "weight_class": 800,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "f2ab17c1a63a0ecc12c2461848fc8a469395e3cd2d641803e889c643d9f958e1",
+   "bytes": 154836
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-Light.ttf",
+   "family": "Poppins",
+   "subfamily": "Light",
+   "full_name": "Poppins Light",
+   "postscript": "Poppins-Light",
+   "version": "4.004",
+   "weight_class": 300,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "650ba57fa99d12ec40c31ccfb680be656be4497fbe14164617d67e32ffe9cd46",
+   "bytes": 161936
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-Medium.ttf",
+   "family": "Poppins",
+   "subfamily": "Medium",
+   "full_name": "Poppins Medium",
+   "postscript": "Poppins-Medium",
+   "version": "4.004",
+   "weight_class": 500,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "90373e7d838d32468438fc3e152dca0bdb12edcab99ea639f158790b1ba1fd05",
+   "bytes": 158576
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-Regular.ttf",
+   "family": "Poppins",
+   "subfamily": "Regular",
+   "full_name": "Poppins Regular",
+   "postscript": "Poppins-Regular",
+   "version": "4.004",
+   "weight_class": 400,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "7e65201e9b79159e2300267cc885e16c8dcef2424cdfa09a29bfb0980a94a7ba",
+   "bytes": 160316
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-SemiBold.ttf",
+   "family": "Poppins",
+   "subfamily": "SemiBold",
+   "full_name": "Poppins SemiBold",
+   "postscript": "Poppins-SemiBold",
+   "version": "4.004",
+   "weight_class": 600,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "d3bf1bdaf0550e83da9ac0b1d1d9fe6db086835a83aa28578e609a394b9a0286",
+   "bytes": 157312
+  },
+  {
+   "file": "Fonts\\Poppins\\Poppins-Thin.ttf",
+   "family": "Poppins",
+   "subfamily": "Thin",
+   "full_name": "Poppins Thin",
+   "postscript": "Poppins-Thin",
+   "version": "4.004",
+   "weight_class": 250,
+   "variable_axes": [],
+   "designer": "Ninad Kale (Devanagari), Jonny Pinhorn (Latin)",
+   "licence_url": "https://scripts.sil.org/OFL",
+   "sha256": "6d8e5d9d29140cc93e321745fa1243c67889e6bc3639ec34db64f3da7a496352",
+   "bytes": 163672
+  }
+ ],
+ "not_packaged": [
+  {
+   "family": "FN Shorif Opekkha Unicode",
+   "styles": [
+    "Regular",
+    "Italic"
+   ],
+   "reason": "Licence (name table id 13): 'cannot Modify, Distribute, Edit, Forge or Sell'; credit FontBD required",
+   "foundry": "FontBD Type Foundry",
+   "designer": "Shorif Uddin Shishir",
+   "source": "https://fontbd.com",
+   "licence_url_in_font": "https://fontbd.com/UserCondition.php (returned 404 on 2026-10-31; verify on site)",
+   "local_copies": [
+    "10-25-26/Editing/edit/assets/fonts/Opekkha.ttf",
+    "10-18-26/fonts/FN Shorif Opekkha Unicode.ttf",
+    "10-18-26/fonts/FN Shorif Opekkha Unicode Italic.ttf"
+   ],
+   "sha256_regular": "copy-of-local, recompute",
+   "role": "Bangla display/punch face in all current captions"
+  },
+  {
+   "family": "Tactic Sans",
+   "styles": [
+    "Thin",
+    "Light",
+    "Regular",
+    "Medium",
+    "Bold",
+    "Black",
+    "Ultra (+Italics)"
+   ],
+   "reason": "Client (Spiralyze) brand font, empty licence field, no evidence of caption use",
+   "local_copies": [
+    "Spiralyze/Font/tactic-sans/"
+   ],
+   "role": "UNVERIFIED - not used in any caption found"
+  }
+ ],
+ "verified_download_pages": {
+  "Poppins": [
+   "https://fonts.google.com/specimen/Poppins",
+   "https://github.com/itfoundry/Poppins"
+  ],
+  "Hind Siliguri": [
+   "https://fonts.google.com/specimen/Hind+Siliguri"
+  ],
+  "Montserrat": [
+   "https://fonts.google.com/specimen/Montserrat",
+   "https://github.com/JulietaUla/Montserrat"
+  ],
+  "Instrument Serif": [
+   "https://fonts.google.com/specimen/Instrument+Serif"
+  ],
+  "Abu Sayed": [
+   "https://codepotro.com/font/codepotro-abu-sayed/"
+  ],
+  "Anek Bangla": [
+   "https://fonts.google.com/specimen/Anek+Bangla"
+  ],
+  "Tiro Bangla": [
+   "https://fonts.google.com/specimen/Tiro+Bangla"
+  ],
+  "Noto Sans Bengali": [
+   "https://fonts.google.com/specimen/Noto+Sans+Bengali"
+  ],
+  "note": "pages returned HTTP 200 on 2026-10-31; licence for packaged files = SIL OFL 1.1 per font name table"
+ }
+}
